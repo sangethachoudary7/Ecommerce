@@ -3,6 +3,7 @@ export const Api = {
   METHODS: {
     LOGIN: 'Login',
     REGISTER: 'RegisterCustomer',
+    GET_ALL_PRODUCTS: 'GetAllProducts',
   },
 };
 export const LoginApi = {

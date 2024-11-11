@@ -55,13 +55,7 @@ export function customPasswordValidator(): ValidatorFn {
 @Component({
   selector: 'app-authentication',
   standalone: true,
-  imports: [
-    FormsModule,
-    CommonModule,
-    ReactiveFormsModule,
-    ProductCatalogueComponent,
-    RouterOutlet,
-  ],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
@@ -119,7 +113,7 @@ export class AuthenticationComponent implements OnInit {
         .pipe(
           switchMap((response) => {
             if (response && response.result) {
-              return this.router.navigateByUrl('/products');
+              return this.router.navigateByUrl('/catalogue');
             } else {
               alert(response.message);
               return of(null);
