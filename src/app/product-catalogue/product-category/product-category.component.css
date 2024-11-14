@@ -1,0 +1,201 @@
+@import 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet';
+:root {
+  --dk-gray-100: #f3f4f6;
+  --dk-gray-200: #e5e7eb;
+  --dk-gray-300: #d1d5db;
+  --dk-gray-400: #9ca3af;
+  --dk-gray-500: #6b7280;
+  --dk-gray-600: #4b5563;
+  --dk-gray-700: #374151;
+  --dk-gray-800: #1f2937;
+  --dk-gray-900: #111827;
+  --dk-dark-bg: #313348;
+  --dk-darker-bg: #2a2b3d;
+  --navbar-bg-color: #6f6486;
+  --sidebar-bg-color: #252636;
+  --sidebar-width: 250px;
+  --primary-color: #3498db;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/** --------------------------------
+ -- Sidebar
+-------------------------------- */
+.sidebar {
+  background-color: var(--sidebar-bg-color);
+  transition: all 0.3s ease-in-out;
+  transform: translateX(0);
+  z-index: 9999999;
+  position: fixed;
+  top: 58px;
+  left: 0;
+  width: 20%;
+  max-width: 380px;
+  min-width: 370px;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+}
+
+.sidebar .close-aside {
+  position: absolute;
+  top: 7px;
+  right: 7px;
+  cursor: pointer;
+  color: #eee;
+}
+
+.sidebar .sidebar-header {
+  border-bottom: 1px solid #2a2b3c;
+}
+
+.sidebar .sidebar-header h5 a {
+  color: var(--dk-gray-300);
+}
+
+.sidebar .sidebar-header p {
+  color: var(--dk-gray-400);
+  font-size: 0.825rem;
+}
+
+.sidebar .search .form-control ~ i {
+  color: #2b2f3a;
+  right: 40px;
+  top: 22px;
+}
+
+.sidebar > ul > li {
+  padding: 0.7rem 1.75rem;
+  font-size: 1.2rem;
+  transition: color 0.3s ease;
+  color: var(--dk-gray-700);
+}
+
+.sidebar ul > li > a {
+  text-decoration: none;
+  font-weight: bold;
+}
+.sidebar ul > li > a:hover {
+  color: purple;
+  font-size: 1.5rem;
+  transition: color 0.3s ease;
+  font-weight: bold;
+}
+/* Start numbers */
+.sidebar ul > li > a > .num {
+  line-height: 0;
+  border-radius: 3px;
+  font-size: 14px;
+  padding: 0px 5px;
+}
+
+.sidebar ul > li > i {
+  font-size: 18px;
+  margin-right: 0.7rem;
+  color: var(--dk-gray-500);
+}
+
+.sidebar ul > li.has-dropdown > a:after {
+  font-family: "Font Awesome 5 Free";
+  font-size: 1rem;
+  line-height: 1.8;
+  float: right;
+  transition: all 0.3s ease-in-out;
+  color: purple;
+}
+
+.sidebar ul .opened > a:after {
+  transform: rotate(-90deg);
+}
+
+/* Start dropdown menu */
+.sidebar ul .sidebar-dropdown {
+  padding-top: 10px;
+  padding-left: 30px;
+  display: none;
+}
+.sidebar ul .sidebar-dropdown.active {
+  display: block;
+}
+
+.sidebar ul .sidebar-dropdown > li > a {
+  font-size: 0.85rem;
+  padding: 0.5rem 0;
+  display: block;
+  color: var(--dk-gray-400);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.sidebar ul .sidebar-dropdown > li > a:hover,
+.sidebar ul .sidebar-dropdown > li > a.active {
+  color: #130bf5;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.drop-down-icon {
+  display: block;
+}
+/* End dropdown menu */
+
+.show-sidebar {
+  transform: translateX(-270px);
+}
+.category-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.7rem 1.75rem;
+  color: inherit;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+.category-link i.fa-chevron-down {
+  margin-left: 8px;
+  font-size: 0.85rem;
+  color: var(--dk-gray-500);
+  transition: transform 0.3s ease-in-out;
+  padding-right: 0.5rem;
+}
+
+.has-dropdown.opened .category-link i.fa-chevron-down {
+  transform: rotate(-90deg);
+}
+
+.sidebar ul .sidebar-dropdown {
+  padding-top: 10px;
+  padding-left: 20px;
+  display: none;
+}
+
+.sidebar ul .sidebar-dropdown.active {
+  display: block;
+}
+.sidebar-content {
+  padding-left: 20px;
+}
+
+@media (max-width: 767px) {
+  .sidebar ul > li {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+
+  .sidebar .search {
+    padding: 10px 0 10px 30px;
+  }
+  .sidebar {
+    width: 100%;
+    height: auto;
+    top: 0;
+  }
+  .sidebar-content {
+    padding-left: 20px; /* Adjust padding on smaller screens */
+  }
+}

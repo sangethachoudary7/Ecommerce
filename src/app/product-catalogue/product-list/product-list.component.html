@@ -1,140 +1,147 @@
-<div class="container">
-  <main>
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
-      <a class="navbar-brand" href="#"><strong>Shopping Cart</strong></a>
-      <button
-        class="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarSupportedContent"
-        aria-controls="navbarSupportedContent"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span class="navbar-toggler-icon"></span>
-      </button>
-
-      <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto"></ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input
-            class="form-control mr-sm-2"
-            type="search"
-            id="search_field"
-            placeholder="Search"
-            aria-label="Search"
-          />
-        </form>
+<div class="catalogue-container">
+  <div class="category">
+    <app-product-category
+      (sCategoryId)="onCategorySelected($event)"
+    ></app-product-category>
+  </div>
+  <div class="product-list">
+    <main>
+      <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="#"><strong>Shopping Cart</strong></a>
         <button
+          class="navbar-toggler"
           type="button"
-          class="btn btn-primary my-2 my-sm-0"
-          data-toggle="modal"
-          data-target="#staticBackdrop"
+          data-toggle="collapse"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
+          aria-expanded="false"
+          aria-label="Toggle navigation"
         >
-          <i class="fas fa-shopping-cart marginright total-count"></i>
+          <span class="navbar-toggler-icon"></span>
         </button>
 
-        <button style="margin-left: 8px" class="clear-cart btn btn-danger">
-          Clear Cart
-        </button>
-      </div>
-    </nav>
-    <section>
-      <div class="featured-area pt-100 pb-70">
-        <div class="container">
-          <div class="tab featured-tab-area">
-            <div *ngIf="prodList$ | async as products">
-              <div class="tab_content current active pt-45">
-                <div class="tabs_item current">
-                  <div class="row justify-content-center">
-                    <div class="col-lg-3 col-md-6" *ngFor="let p of products">
-                      <div class="featured-item">
-                        <div class="featured-item-img">
-                          <a href="#">
-                            <img [src]="p.productImageUrl" alt="Images" />
-                          </a>
-                        </div>
-                        <div class="content">
-                          <h3>
-                            <a href="#">{{ p.productName }}</a>
-                          </h3>
-                          <hr />
-                          <div class="content-in">
-                            <h4>{{ p.productPrice }}</h4>
-                            <span
-                              >(4.9)<i
-                                class="fa fa-star"
-                                style="color: green"
-                              ></i
-                            ></span>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav mr-auto"></ul>
+          <form class="form-inline my-2 my-lg-0">
+            <input
+              class="form-control mr-sm-2"
+              type="search"
+              id="search_field"
+              placeholder="Search"
+              aria-label="Search"
+            />
+          </form>
+          <button
+            type="button"
+            class="btn btn-primary my-2 my-sm-0"
+            data-toggle="modal"
+            data-target="#staticBackdrop"
+          >
+            <i class="fas fa-shopping-cart marginright total-count"></i>
+          </button>
+
+          <button style="margin-left: 8px" class="clear-cart btn btn-danger">
+            Clear Cart
+          </button>
+        </div>
+      </nav>
+      <section>
+        <div class="featured-area pt-100 pb-70">
+          <div class="container">
+            <div class="tabs featured-tab-area">
+              <div *ngIf="prodList$ | async as products">
+                <div class="tab_content current active pt-45">
+                  <div class="tabs_item current">
+                    <div class="row justify-content-start">
+                      <div class="col-lg-3 col-md-6" *ngFor="let p of products">
+                        <div class="featured-item">
+                          <div class="featured-item-img">
+                            <a href="#">
+                              <img [src]="p.productImageUrl" alt="Images" />
+                            </a>
                           </div>
-                          <hr />
-                          <div class="featured-content-list">
-                            <!-- **** IMPORTANT **** : Just add the class outofstock to those products, that are un-available, like in the example shown in the end below. Remove this class when they become available again. -->
+                          <div class="content">
+                            <h3>
+                              <a href="#">{{ p.productName }}</a>
+                            </h3>
+                            <hr />
+                            <div class="content-in">
+                              <h4>{{ p.productPrice }}</h4>
+                              <span
+                                >(4.9)<i
+                                  class="fa fa-star"
+                                  style="color: green"
+                                ></i
+                              ></span>
+                            </div>
+                            <hr />
+                            <div class="featured-content-list">
+                              <!-- **** IMPORTANT **** : Just add the class outofstock to those products, that are un-available, like in the example shown in the end below. Remove this class when they become available again. -->
 
-                            <button
-                              type="button"
-                              data-name="Oxford Shirts"
-                              data-price="1200"
-                              class="default-btn border-radius-5"
-                            >
-                              Add to cart
-                            </button>
+                              <button
+                                type="button"
+                                data-name="Oxford Shirts"
+                                data-price="1200"
+                                class="default-btn border-radius-5"
+                              >
+                                Add to cart
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
                   </div>
+                  <p id="not_found"></p>
                 </div>
-                <p id="not_found"></p>
               </div>
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- Modal -->
-    <div
-      class="modal fade"
-      id="staticBackdrop"
-      data-backdrop="static"
-      data-keyboard="false"
-      tabindex="-1"
-      aria-labelledby="staticBackdropLabel"
-      aria-hidden="true"
-    >
-      <div class="modal-dialog modal-dialog-centered modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="staticBackdropLabel">Your Cart</h5>
-            <button
-              type="button"
-              class="close"
-              data-dismiss="modal"
-              aria-label="Close"
-            >
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <table class="show-cart table"></table>
-            <div class="grand-total">
-              Total price: ₹<span class="total-cart"></span>
+      <!-- Modal -->
+      <div
+        class="modal fade"
+        id="staticBackdrop"
+        data-backdrop="static"
+        data-keyboard="false"
+        tabindex="-1"
+        aria-labelledby="staticBackdropLabel"
+        aria-hidden="true"
+      >
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="staticBackdropLabel">Your Cart</h5>
+              <button
+                type="button"
+                class="close"
+                data-dismiss="modal"
+                aria-label="Close"
+              >
+                <span aria-hidden="true">&times;</span>
+              </button>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button
-              type="button"
-              class="btn btn-secondary"
-              data-dismiss="modal"
-            >
-              Close
-            </button>
-            <!-- <button type="button" class="btn btn-danger clear-all">Clear All</button> -->
+            <div class="modal-body">
+              <table class="show-cart table"></table>
+              <div class="grand-total">
+                Total price: ₹<span class="total-cart"></span>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Close
+              </button>
+              <!-- <button type="button" class="btn btn-danger clear-all">Clear All</button> -->
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  </main>
+    </main>
+  </div>
 </div>

@@ -5,8 +5,14 @@ import { ProductListComponent } from './product-list/product-list.component';
 @Component({
   selector: 'app-product-catalogue',
   standalone: true,
-  imports: [ProductCategoryComponent, ProductListComponent],
+  imports: [ProductListComponent],
   templateUrl: './product-catalogue.component.html',
   styleUrl: './product-catalogue.component.css',
 })
-export class ProductCatalogueComponent {}
+export class ProductCatalogueComponent {
+  selectedCategoryId: number | null = null;
+  onCategorySelected(categoryId: number) {
+    console.log('input', categoryId);
+    this.selectedCategoryId = categoryId;
+  }
+}

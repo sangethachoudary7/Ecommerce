@@ -10,3 +10,10 @@ export interface Product {
   productImageUrl: string;
   KcategoryName: string;
 }
+
+export interface ProductCategory {
+  categoryId: number;
+  categoryName: string;
+  parentCategoryId: number;
+  userId: number;
+}

@@ -1,1 +1,60 @@
-<p>product-category works!</p>
+<aside class="sidebar">
+  <div class="search position-relative text-center px-4 py-3 mt-2">
+    <input
+      type="text"
+      class="form-control w-100 border-0 bg-transparent"
+      placeholder="Search here"
+    />
+    <i class="fa fa-search position-absolute d-block fs-6"></i>
+  </div>
+
+  <div class="sidebar-content">
+    <ul class="categories list-unstyled" *ngIf="category$ | async as category">
+      <ng-container *ngFor="let c of category">
+        <li class="has-dropdown" *ngIf="c.parentCategoryId === 0">
+          <a
+            href="#"
+            [routerLink]="[]"
+            class="category-link"
+            [ngClass]="{ class1: true, class2: true }"
+            (click)="
+              toggleDropdown(c.categoryId); selectCategoryId(c.categoryId)
+            "
+          >
+            {{ c.categoryName }}
+
+            <i
+              class="fa fa-chevron-down"
+              *ngIf="hasSubCategories(c.categoryId)"
+            ></i>
+          </a>
+
+          <ul
+            class="sidebar-dropdown list-unstyled"
+            [class.active]="selectedCategoryId === c.categoryId"
+          >
+            <ng-container *ngFor="let sub of category">
+              <li *ngIf="sub.parentCategoryId === c.categoryId">
+                <a
+                  href="#"
+                  [routerLink]="[]"
+                  (click)="
+                    setSelectedSubCategory(sub.categoryId);
+                    selectCategoryId(sub.categoryId)
+                  "
+                  [ngClass]="{
+                    active: selectedSubCategoryId === sub.categoryId,
+                    class1: true,
+                    class2: true
+                  }"
+                >
+                  {{ sub.categoryName }}</a
+                >
+              </li>
+            </ng-container>
+          </ul>
+        </li>
+      </ng-container>
+    </ul>
+  </div>
+</aside>
