@@ -1,4 +1,7 @@
+import { HttpHeaders } from '@angular/common/http';
+
 export const Api = {
+  // API_URL: '/api/amazon/',
   API_URL: '/api/BigBasket/',
   METHODS: {
     LOGIN: 'Login',
@@ -6,13 +9,14 @@ export const Api = {
     GET_ALL_PRODUCTS: 'GetAllProducts',
     GET_ALL_CATEGORY: 'GetAllCategory',
     GET_PRODUCTS_BY_CATEGORY_ID: 'GetAllProductsByCategoryId',
+    ADD_TO_CART: 'AddToCart',
+    D_P_FROM_CART_BY_ID: 'DeleteProductFromByCartByID',
+    ALL_CART_ITEAM: 'GetAllCartItems',
     C_PRODOCT: 'CreateProduct',
     U_PRODOCT: 'UpdateProduct',
     D_PRODUCT: 'DeleteProductById',
     GET_PRODUCT_BY_ID: 'GetProductById',
-    ALL_CART_ITEAM: 'GetAllCartItems',
-    ADD_TO_CART: 'AddToCart',
-    D_P_FROM_CART_BY_ID: 'DeleteProductFromByCartByID',
+
     PLACE_ORDER: 'PlaceOrder',
     CANCLE_ORDER: 'cancelOrder',
     CREATE_NEW_CATEGORY: 'CreateNewCategory',
@@ -25,3 +29,8 @@ export const LoginApi = {
     LOGIN: 'Login',
   },
 };
+export const headers = new HttpHeaders({
+  'Content-Type': 'application/json',
+});
+
+// API_URL: '/api/BigBasket/',

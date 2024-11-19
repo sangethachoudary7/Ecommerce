@@ -23,17 +23,11 @@ export function customPasswordValidator(): ValidatorFn {
     if (!passWord) {
       return { required: 'Password is required' };
     }
-
-    // const hasUpperCase = /[A-Z]/.test(passWord);
     const hasLowerCase = /[a-z]/.test(passWord);
     const hasNumeric = /[0-9]/.test(passWord);
     const hasMinLength = passWord.length >= 4;
 
     const validationErrors: ValidationErrors = {};
-    // if (!hasUpperCase) {
-    //   validationErrors['uppercase'] =
-    //     'Password must contain at least one uppercase letter';
-    // }
 
     if (!hasLowerCase) {
       validationErrors['lowercase'] =
@@ -113,6 +107,12 @@ export class AuthenticationComponent implements OnInit {
         .pipe(
           switchMap((response) => {
             if (response && response.result) {
+              const { password, ...userWithoutPassword } = response.data;
+
+              sessionStorage.setItem(
+                'userDetails',
+                JSON.stringify(userWithoutPassword)
+              );
               return this.router.navigateByUrl('/catalogue');
             } else {
               alert(response.message);

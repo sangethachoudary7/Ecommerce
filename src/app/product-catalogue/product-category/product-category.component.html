@@ -16,7 +16,13 @@
             href="#"
             [routerLink]="[]"
             class="category-link"
-            [ngClass]="{ class1: true, class2: true }"
+            [ngClass]="{
+              class1: true,
+              class2: true,
+              'active-category':
+                selectedCategoryId === c.categoryId ||
+                isParentCategory(c.categoryId)
+            }"
             (click)="
               toggleDropdown(c.categoryId); selectCategoryId(c.categoryId)
             "
@@ -29,9 +35,13 @@
             ></i>
           </a>
 
-          <ul
+          <!-- <ul
             class="sidebar-dropdown list-unstyled"
             [class.active]="selectedCategoryId === c.categoryId"
+          > -->
+          <ul
+            class="sidebar-dropdown list-unstyled"
+            [class.active]="openCategoryId === c.categoryId"
           >
             <ng-container *ngFor="let sub of category">
               <li *ngIf="sub.parentCategoryId === c.categoryId">
@@ -43,13 +53,14 @@
                     selectCategoryId(sub.categoryId)
                   "
                   [ngClass]="{
+                    'active-subcategory': selectedCategoryId === sub.categoryId,
                     active: selectedSubCategoryId === sub.categoryId,
                     class1: true,
                     class2: true
                   }"
                 >
-                  {{ sub.categoryName }}</a
-                >
+                  {{ sub.categoryName }}
+                </a>
               </li>
             </ng-container>
           </ul>

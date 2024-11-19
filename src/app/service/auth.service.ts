@@ -5,12 +5,13 @@ import { map, catchError, throwError, Observable } from 'rxjs';
 import { Login, Login1Response, LoginResponse } from '../interface/login';
 import { Registration, RegistrationResponse } from '../interface/register';
 import { AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   customPasswordValidator(): ValidatorFn {
     return (control: AbstractControl): ValidationErrors | null => {
@@ -53,7 +54,7 @@ export class AuthService {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
     });
-    console.log('Login data:', loginData);
+
     return this.http
       .post<LoginResponse>(
         LoginApi.loginUrl + LoginApi.METHODS.LOGIN,
@@ -64,15 +65,13 @@ export class AuthService {
       )
       .pipe(
         map((response) => {
-          console.log('Login response:', response);
-
           if (response && response.token) {
             localStorage.setItem('authToken', response.token);
           }
           return response;
         }),
         catchError((error) => {
-          console.error('Login request failed', error);
+          this.toastr.warning(error);
           return throwError(() => error);
         })
       );
@@ -86,25 +85,22 @@ export class AuthService {
       'Content-Type': 'application/json-patch+json',
       accept: 'text/plain',
     });
-    console.log('Login data:', logData);
+
     return this.http
       .post<Login1Response>(Api.API_URL + Api.METHODS.LOGIN, logData, {
         headers,
       })
       .pipe(
         map((response) => {
-          console.log('Login response:', response);
-
           if (response.result && response.data) {
             localStorage.setItem('authToken', response.data.name);
           } else {
-            console.error('Login failed:', response.message);
             alert(response.message); // D
           }
           return response;
         }),
         catchError((error) => {
-          console.error('Login request failed', error);
+          this.toastr.warning(error);
           return throwError(() => error);
         })
       );
@@ -120,11 +116,10 @@ export class AuthService {
       })
       .pipe(
         map((responce: RegistrationResponse) => {
-          console.log('Registration response', responce);
           return responce;
         }),
         catchError((error) => {
-          console.log('registration request fails', error);
+          this.toastr.warning(error);
           return throwError(() => error);
         })
       );

@@ -1,6 +1,6 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { Product, ProductCategory } from '../interface/product';
 import { Api } from './constant/constant';
 
@@ -9,6 +9,12 @@ import { Api } from './constant/constant';
 })
 export class ProductsService {
   constructor(private http: HttpClient) {}
+  startLoading(isLoading: boolean) {
+    setTimeout(() => {
+      isLoading = false;
+    }, 100);
+  }
+
   getProducts(): Observable<{ data: Product[] }> {
     return this.http
       .get<{ data: Product[] }>(Api.API_URL + Api.METHODS.GET_ALL_PRODUCTS)
@@ -41,18 +47,16 @@ export class ProductsService {
     return (
       this.http
         .get<{ data: Product[] }>(
-          `${Api.API_URL}${Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID}/${categoryId}`
+          `${Api.API_URL}${Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID}?id=${categoryId}`
         )
         // (
         // Api.API_URL + Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID + '/' + categoryId
         // )
         .pipe(
           map((resp) => {
-            console.log('Cate', resp);
             return resp;
           }),
           catchError((err) => {
-            console.log('err', err);
             return throwError(() => err);
           })
         )

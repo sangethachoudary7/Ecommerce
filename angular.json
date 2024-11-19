@@ -27,7 +27,9 @@
             "styles": [
               "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css",
-              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css"
+              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css",
+              "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.6.0/css/all.min.css",
+              "src/assets/styles/toastr.css"
             ],
             "scripts": []
           },

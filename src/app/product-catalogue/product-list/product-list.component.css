@@ -415,3 +415,83 @@ input[type="search"]::-webkit-search-results-decoration {
   padding: 1rem;
   background-color: rgb(194, 204, 233);
 }
+.cart-window {
+  position: fixed;
+  top: 50%; /* Center vertically */
+  left: 50%;
+  transform: translate(-50%, -50%); /* Offset to truly center it */
+  background: #fff;
+  border: 1px solid #ccc;
+  padding: 16px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  border-radius: 10px;
+}
+.cart-window .overlay {
+  position: fixed; /* Full-screen overlay */
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 999; /* Place it below the modal */
+}
+.cart-window .quantity-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.cart-window .quantity-controls button {
+  width: 50px;
+  height: 50px;
+  font-size: 25px;
+  font-weight: bold;
+  border: none;
+  background-color: #007bff;
+  color: white;
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cart-window .quantity-controls button:hover {
+  background-color: #0056b3;
+}
+
+.cart-window .quantity-controls span {
+  display: flex; /* Use flex on span to align text properly */
+  justify-content: center; /* Align text horizontally in the center */
+  align-items: center; /* Align text vertically in the center */
+  width: 50px;
+  height: 50px;
+  font-size: 25px;
+  font-weight: bold;
+  text-align: center;
+}
+.cart-window .button-container {
+  display: flex;
+  justify-content: space-between; /* Arrange buttons side by side */
+  gap: 10px;
+  margin-top: 20px;
+}
+.cart-window .close-btn {
+  padding: 15px 25px;
+  font-size: 24px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: rgb(226, 27, 27);
+  border: none;
+  border-radius: 15px;
+  box-shadow: 0 9px #373737;
+}
+.cart-window .close-btn:hover {
+  background-color: #b83340; /* Darker red on hover */
+}

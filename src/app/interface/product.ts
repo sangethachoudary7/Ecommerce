@@ -1,4 +1,5 @@
 export interface Product {
+  productId: number;
   productSku: string;
   productName: string;
   productPrice: number;
@@ -9,6 +10,7 @@ export interface Product {
   categoryId: number;
   productImageUrl: string;
   KcategoryName: string;
+  quantity?: number;
 }
 
 export interface ProductCategory {
@@ -16,4 +18,17 @@ export interface ProductCategory {
   categoryName: string;
   parentCategoryId: number;
   userId: number;
+}
+
+export interface AddToCart {
+  cartId: number;
+  custId: number;
+  productId: number;
+  quantity: number;
+  addedDate: string;
+}
+export interface ApiResponse<T> {
+  message: string | null;
+  result: boolean;
+  data: T | null;
 }

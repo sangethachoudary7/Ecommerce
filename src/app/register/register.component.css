@@ -87,7 +87,7 @@
 }
 
 .wrapper .btn {
-  width: 100%;
+  width: 50%;
   height: 45px;
   background: #fff;
   border: none;
@@ -98,6 +98,7 @@
   color: #333;
   font-weight: 600;
   transition: 0.5s;
+  margin-right: 0px;
 }
 
 .wrapper .btn:hover {

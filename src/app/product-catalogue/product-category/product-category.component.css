@@ -180,7 +180,20 @@
 .sidebar-content {
   padding-left: 20px;
 }
+.active-category {
+  color: palegreen;
+  font-weight: bold;
+  background-color: dimgrey;
+  padding: 0.5rem;
+  border-radius: 4px;
+}
 
+.active-subcategory {
+  color: black;
+  background-color: darkseagreen;
+  font-weight: bold;
+  text-decoration: underline;
+}
 @media (max-width: 767px) {
   .sidebar ul > li {
     padding-top: 12px;

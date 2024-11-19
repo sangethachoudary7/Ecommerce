@@ -11,6 +11,7 @@ import { AuthService } from '../service/auth.service';
 import { Registration } from '../interface/register';
 import { catchError, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-register',
@@ -25,7 +26,8 @@ export class RegisterComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private toastr: ToastrService
   ) {}
   ngOnInit() {
     this.registerForm = this.fb.group({
@@ -63,8 +65,6 @@ export class RegisterComponent implements OnInit {
     }
   }
   onSubmit() {
-    console.log('Form Value:', this.registerForm.value);
-    console.log('Form Errors:', this.registerForm.errors);
     if (this.registerForm.valid) {
       const { userName, mobileNo, Password } = this.registerForm.value;
       const regData: Registration = {
@@ -77,20 +77,25 @@ export class RegisterComponent implements OnInit {
         .pipe(
           switchMap((resp) => {
             if (resp.result) {
+              this.toastr.success(resp.message);
               return this.router.navigateByUrl('/login', {
                 state: { userName: userName },
               });
             } else {
+              this.toastr.warning(resp.message);
               this.router.navigateByUrl('/register');
               return of(null);
             }
           }),
           catchError((error) => {
-            console.log('reg Error', error);
+            this.toastr.error(error);
             return of(null);
           })
         )
         .subscribe();
     }
+  }
+  login() {
+    this.router.navigateByUrl('/login');
   }
 }

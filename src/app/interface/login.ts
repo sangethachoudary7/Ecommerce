@@ -15,3 +15,9 @@ export interface Login1Response {
     password: string; // User's password (usually sensitive, might not need to store)
   } | null;
 }
+
+export interface User {
+  custId: number;
+  name: string;
+  mobileNo: number;
+}

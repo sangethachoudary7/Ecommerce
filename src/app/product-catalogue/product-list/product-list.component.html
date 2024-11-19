@@ -1,9 +1,11 @@
 <div class="catalogue-container">
-  <div class="category">
+  <app-loading-spinner [isLoading]="loading"></app-loading-spinner>
+
+  <!-- <div class="category">
     <app-product-category
       (sCategoryId)="onCategorySelected($event)"
     ></app-product-category>
-  </div>
+  </div> -->
   <div class="product-list">
     <main>
       <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
@@ -37,10 +39,16 @@
             data-toggle="modal"
             data-target="#staticBackdrop"
           >
-            <i class="fas fa-shopping-cart marginright total-count"></i>
+            <i class="fas fa-shopping-cart marginright total-count">
+              {{ cartQuantity$ | async }}</i
+            >
           </button>
 
-          <button style="margin-left: 8px" class="clear-cart btn btn-danger">
+          <button
+            style="margin-left: 8px"
+            class="clear-cart btn btn-danger"
+            (click)="clearCart()"
+          >
             Clear Cart
           </button>
         </div>
@@ -83,6 +91,7 @@
                                 data-name="Oxford Shirts"
                                 data-price="1200"
                                 class="default-btn border-radius-5"
+                                (click)="showProductDetails(p)"
                               >
                                 Add to cart
                               </button>
@@ -143,5 +152,38 @@
         </div>
       </div>
     </main>
+  </div>
+  <div #cartWindow class="cart-window" [hidden]="isCartHidden">
+    <h4>Add to Cart</h4>
+    <div>
+      <div *ngIf="prodList$ | async as products">
+        <div *ngFor="let p of products">
+          <div *ngIf="p.productId === selectedProduct?.productId">
+            <div>
+              <h2>{{ p.productName }}</h2>
+            </div>
+            <div class="featured-item-img">
+              <img [src]="p.productImageUrl" alt="Images" />
+            </div>
+          </div>
+        </div>
+        <div class="quantity-controls">
+          <button (click)="decrementQuantity()">-</button>
+          <span>{{ quantity }}</span>
+          <button (click)="incrementQuantity()">+</button>
+        </div>
+        <div class="button-container">
+          <button class="default-btn border-radius-5" (click)="addToCart()">
+            Add
+          </button>
+          <button
+            class="default-btn close-btn border-radius-5"
+            (click)="closeCart()"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
