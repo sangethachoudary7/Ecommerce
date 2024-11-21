@@ -1,10 +1,13 @@
 import {
   Component,
   ElementRef,
+  EventEmitter,
   inject,
   Input,
   OnChanges,
   OnInit,
+  Output,
+  output,
   SimpleChange,
   SimpleChanges,
   ViewChild,
@@ -15,6 +18,7 @@ import {
   map,
   Observable,
   of,
+  pipe,
   shareReplay,
   tap,
   throwError,
@@ -36,9 +40,9 @@ import { CartService } from '../../service/cart.service';
 })
 export class ProductListComponent implements OnInit, OnChanges {
   public prodList$!: Observable<Product[]>;
-
+  public cartItems$!: Observable<AddToCart[]>;
   @Input() selectedCategoryId: number | null = null;
-
+  @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   loading = false;
 
   userDetails!: User;
@@ -192,7 +196,7 @@ export class ProductListComponent implements OnInit, OnChanges {
   }
 
   clearCart() {
-    this.cartService.removeItemByCartId(7941).pipe(
+    this.cartService.removeItemByCartId(this.userDetails.custId).pipe(
       map((resp) => {
         if (resp && resp.message) {
           this.decrementQuantity();
@@ -206,5 +210,27 @@ export class ProductListComponent implements OnInit, OnChanges {
     );
     this.cartService.resetCart();
     this.toastr.info('Cart cleared!');
+  }
+  getCartItems() {
+    if (this.cartQuantity$) {
+      this.cartItems$ = this.cartService
+        .getCartItems(this.userDetails.custId)
+        .pipe(
+          tap((resp) => {
+            console.log('tap plist', resp);
+            if (resp && resp.length > 0) {
+              this.cartService.toggleCartVisibility(); // Show cart if items exist
+            } else {
+              this.toastr.info('No Products Available in cart');
+            }
+          }),
+          catchError((e) => {
+            return of([]);
+          })
+        );
+      this.cartItems.emit(this.cartItems$);
+    } else {
+      this.toastr.info('No Products Available in cart');
+    }
   }
 }

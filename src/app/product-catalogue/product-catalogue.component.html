@@ -11,14 +11,16 @@
 </div> -->
 
 <div class="product-catalogue">
-  <div class="category">
+  <div class="category" *ngIf="!isCartVisible">
     <app-product-category
       (sCategoryId)="onCategorySelected($event)"
     ></app-product-category>
   </div>
-  <div class="product-list">
+  <div class="product-list" *ngIf="!isCartVisible">
     <app-product-list
       [selectedCategoryId]="selectedCategoryId"
+      (cartItems)="cartItems($event)"
     ></app-product-list>
   </div>
+  <app-cart [cartItems]="cartItems$" *ngIf="isCartVisible"></app-cart>
 </div>

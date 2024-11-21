@@ -10,6 +10,7 @@ export const Api = {
     GET_ALL_CATEGORY: 'GetAllCategory',
     GET_PRODUCTS_BY_CATEGORY_ID: 'GetAllProductsByCategoryId',
     ADD_TO_CART: 'AddToCart',
+    GET_ALL_PRODUCT_BY_CUST_ID: 'GetCartProductsByCustomerId',
     D_P_FROM_CART_BY_ID: 'DeleteProductFromByCartByID',
     ALL_CART_ITEAM: 'GetAllCartItems',
     C_PRODOCT: 'CreateProduct',

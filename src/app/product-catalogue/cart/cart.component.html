@@ -1,1 +1,5 @@
-<p>cart Works</p>
+<ul>
+  <li *ngFor="let item of cartItems | async">
+    {{ item.productName }} - {{ item.quantity }}
+  </li>
+</ul>

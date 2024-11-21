@@ -26,6 +26,11 @@ export interface AddToCart {
   productId: number;
   quantity: number;
   addedDate: string;
+  productShortName?: string;
+  productName?: string;
+  categoryName?: string;
+  productImageUrl?: string;
+  productPrice?: number;
 }
 export interface ApiResponse<T> {
   message: string | null;
