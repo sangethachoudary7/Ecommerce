@@ -27,6 +27,20 @@ export class ProductsService {
         })
       );
   }
+  getProductsById(id: Product): Observable<{ data: Product[] }> {
+    return this.http
+      .get<{ data: Product[] }>(
+        `${Api.API_URL}${Api.METHODS.GET_PRODUCT_BY_ID}?id=${id.productId}`
+      )
+      .pipe(
+        map((resp) => {
+          return resp;
+        }),
+        catchError((err) => {
+          return throwError(() => err);
+        })
+      );
+  }
   public getCategory(): Observable<{ data: ProductCategory[] }> {
     return this.http
       .get<{ data: ProductCategory[] }>(

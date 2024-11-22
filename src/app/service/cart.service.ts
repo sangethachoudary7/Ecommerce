@@ -64,27 +64,6 @@ export class CartService {
       `${Api.API_URL} ${Api.METHODS.D_P_FROM_CART_BY_ID} / ${cartId}`
     );
   }
-  // public getCartItems1(custId: number): Observable<AddToCart[]> {
-  //   return this.http
-  //     .get<ApiResponse<AddToCart[]>>(
-  //       `${Api.API_URL}${Api.METHODS.GET_ALL_PRODUCT_BY_CUST_ID}?id=${custId}`
-  //     )
-  //     .pipe(
-  //       tap((resp) => {
-  //         console.log('tap api', resp);
-  //       }),
-  //       map((r) => {
-  //         if (r.data && r.result) {
-  //           return r.data;
-  //         } else {
-  //           return [];
-  //         }
-  //       }),
-  //       catchError((err) => {
-  //         return of([]);
-  //       })
-  //     );
-  // }
   public getCartItems(custId: number): Observable<AddToCart[]> {
     return this.http
       .get<ApiResponse<AddToCart[]>>(
@@ -93,18 +72,20 @@ export class CartService {
       .pipe(
         map((r) => {
           if (r.result && r.data) {
-            console.log('result', r.result);
-            console.log('data', r.data);
+            const cartItems = r.data;
+            const totalQuantity = cartItems.reduce(
+              (total, item) => total + item.quantity,
+              0
+            );
+            this.cartQuantitySubject.next(totalQuantity);
             return r.data;
           } else {
             return [];
           }
         }),
-        tap((data) => {
-          console.log('tap api', data);
-        }),
+
         catchError((err) => {
-          console.error('Error occurred:', err);
+          this.cartQuantitySubject.next(0);
           return of([]);
         })
       );

@@ -41,6 +41,8 @@ import { CartService } from '../../service/cart.service';
 export class ProductListComponent implements OnInit, OnChanges {
   public prodList$!: Observable<Product[]>;
   public cartItems$!: Observable<AddToCart[]>;
+  public selectedProductDetails$!: Observable<Product>;
+
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   loading = false;
@@ -62,6 +64,10 @@ export class ProductListComponent implements OnInit, OnChanges {
   ngOnInit() {
     this.getUserDetails();
     this.loadProducts();
+    if (this.userDetails && this.userDetails.custId) {
+      // Fetch cart items and update quantity
+      this.cartItems$ = this.cartService.getCartItems(this.userDetails.custId);
+    }
     this.cartQuantity$ = this.cartService.cartQuantity$;
   }
 
@@ -138,15 +144,30 @@ export class ProductListComponent implements OnInit, OnChanges {
       })
     );
   }
+  public getProductsByPId(id: Product) {
+    return this.proService
+      .getProductsById(id)
+      .pipe(
+        map((resp) => {
+          console.log('pid', resp.data);
+          return resp.data;
+        }),
+        catchError((e) => {
+          this.toastr.success('API Error', 'Contact Admin');
+          return of([]);
+        })
+      )
+      .subscribe();
+  }
   showProductDetails(product: Product) {
     this.selectedProduct = product;
     this.isCartHidden = false;
-    this.quantity = 1;
+    // this.quantity = 1;
   }
 
   addToCart() {
     if (!this.selectedProduct || this.quantity <= 0) {
-      this.toastr.warning('No product selected or quantity is zero.');
+      this.toastr.warning('No products in cart');
       return null;
     }
     const cartData: AddToCart = {
@@ -219,7 +240,7 @@ export class ProductListComponent implements OnInit, OnChanges {
           tap((resp) => {
             console.log('tap plist', resp);
             if (resp && resp.length > 0) {
-              this.cartService.toggleCartVisibility(); // Show cart if items exist
+              // this.cartService.toggleCartVisibility(); // Show cart if items exist
             } else {
               this.toastr.info('No Products Available in cart');
             }
