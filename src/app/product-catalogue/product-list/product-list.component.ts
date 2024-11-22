@@ -14,6 +14,7 @@ import {
 } from '@angular/core';
 import {
   catchError,
+  combineLatest,
   finalize,
   map,
   Observable,
@@ -54,9 +55,10 @@ export class ProductListComponent implements OnInit, OnChanges {
 
   public selectedProduct!: Product | null;
   public quantity: number = 1;
-  cartQuantity$!: Observable<number>;
-
+  // cartQuantity$!: Observable<number>;
   cartService = inject(CartService);
+  cartQuantity$ = this.cartService.cartQuantity$; // Bind cartQuantity$ directly from CartService
+
   constructor(
     private proService: ProductsService,
     private toastr: ToastrService
@@ -66,9 +68,12 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.loadProducts();
     if (this.userDetails && this.userDetails.custId) {
       // Fetch cart items and update quantity
+      // this.cartItems$ = this.getCartItems1();
       this.cartItems$ = this.cartService.getCartItems(this.userDetails.custId);
+      this.cartQuantity$ = this.cartItems$.pipe(
+        map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
+      );
     }
-    this.cartQuantity$ = this.cartService.cartQuantity$;
   }
 
   getUserDetails() {
@@ -253,5 +258,26 @@ export class ProductListComponent implements OnInit, OnChanges {
     } else {
       this.toastr.info('No Products Available in cart');
     }
+  }
+  getCartItems1(): Observable<AddToCart[]> {
+    return this.cartService.getCartItems(this.userDetails.custId).pipe(
+      tap((resp) => {
+        console.log('Cart Items:', resp);
+        if (resp && resp.length > 0) {
+          // You can calculate the cart quantity here if needed
+          const totalQuantity = resp.reduce(
+            (sum, item) => sum + item.quantity,
+            0
+          );
+          console.log('Total Cart Quantity:', totalQuantity);
+        } else {
+          this.toastr.info('No Products Available in cart');
+        }
+      }),
+      catchError((e) => {
+        this.toastr.error('Error fetching cart items');
+        return of([]); // Return empty array on error
+      })
+    );
   }
 }

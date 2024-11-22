@@ -44,9 +44,8 @@ export class CartService {
       )
       .pipe(
         tap((resp) => {
-          if (resp) {
-            const currentQuantity = this.cartQuantitySubject.value;
-            this.cartQuantitySubject.next(currentQuantity + cartData.quantity);
+          if (resp && resp.result) {
+            this.getCartItems(cartData.custId);
           }
         }),
         catchError((e) => {
@@ -72,18 +71,17 @@ export class CartService {
       .pipe(
         map((r) => {
           if (r.result && r.data) {
-            const cartItems = r.data;
-            const totalQuantity = cartItems.reduce(
+            const totalQuantity = r.data.reduce(
               (total, item) => total + item.quantity,
               0
             );
             this.cartQuantitySubject.next(totalQuantity);
             return r.data;
           } else {
+            this.cartQuantitySubject.next(0);
             return [];
           }
         }),
-
         catchError((err) => {
           this.cartQuantitySubject.next(0);
           return of([]);
