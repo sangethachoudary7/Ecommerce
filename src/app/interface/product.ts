@@ -9,7 +9,7 @@ export interface Product {
   deliveryTimeSpan: string;
   categoryId: number;
   productImageUrl: string;
-  KcategoryName: string;
+  KcategoryName?: string;
   quantity?: number;
 }
 

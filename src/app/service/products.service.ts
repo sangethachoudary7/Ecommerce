@@ -1,7 +1,12 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { catchError, map, Observable, tap, throwError } from 'rxjs';
-import { Product, ProductCategory } from '../interface/product';
+import {
+  AddToCart,
+  ApiResponse,
+  Product,
+  ProductCategory,
+} from '../interface/product';
 import { Api } from './constant/constant';
 
 @Injectable({
@@ -9,6 +14,7 @@ import { Api } from './constant/constant';
 })
 export class ProductsService {
   constructor(private http: HttpClient) {}
+
   startLoading(isLoading: boolean) {
     setTimeout(() => {
       isLoading = false;
@@ -75,5 +81,24 @@ export class ProductsService {
           })
         )
     );
+  }
+  public updateProduct(product: AddToCart) {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+    });
+    return this.http
+      .post(
+        `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
+        headers
+      )
+      .pipe(
+        map((resp) => {
+          console.log('product', resp);
+          return resp;
+        }),
+        catchError((e) => {
+          return throwError(() => e);
+        })
+      );
   }
 }

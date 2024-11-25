@@ -2,7 +2,7 @@ import { Component, ViewChild } from '@angular/core';
 import { ProductCategoryComponent } from './product-category/product-category.component';
 import { ProductListComponent } from './product-list/product-list.component';
 import { ToastrWrapperModule } from '../module/toastr-wrapper-module';
-import { Login } from '../interface/login';
+import { Login, User } from '../interface/login';
 import { AddToCart } from '../interface/product';
 import { Observable } from 'rxjs';
 import { CartComponent } from './cart/cart.component';
@@ -26,6 +26,7 @@ export class ProductCatalogueComponent {
   selectedCategoryId: number | null = null;
   cartItems$!: Observable<AddToCart[]>;
   isCartVisible = false;
+  uDetails!: User;
 
   constructor(private cartService: CartService) {
     this.cartService.cartVisible$.subscribe((isvisible) => {
@@ -41,5 +42,8 @@ export class ProductCatalogueComponent {
     this.cartItems$ = cartItems$;
     this.isCartVisible = true;
     console.log('PCAtalog', this.cartItems$);
+  }
+  userDetails(uDetails: User) {
+    this.uDetails = uDetails;
   }
 }

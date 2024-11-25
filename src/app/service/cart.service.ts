@@ -23,7 +23,19 @@ export class CartService {
   private cartVisibleSubject = new BehaviorSubject<boolean>(false);
   cartVisible$ = this.cartVisibleSubject.asObservable();
 
+  private cartItemsSubject = new BehaviorSubject<AddToCart[]>([]);
+  cartItems$ = this.cartItemsSubject.asObservable();
+
   constructor(private http: HttpClient, private toastr: ToastrService) {}
+
+  totalPrice$ = this.cartItems$.pipe(
+    map((items) =>
+      items.reduce(
+        (sum, item) => sum + (item.productPrice || 0) * item.quantity,
+        0
+      )
+    )
+  );
 
   toggleCartVisibility() {
     const currenState = this.cartQuantitySubject.value;
@@ -69,23 +81,36 @@ export class CartService {
         `${Api.API_URL}${Api.METHODS.GET_ALL_PRODUCT_BY_CUST_ID}?id=${custId}`
       )
       .pipe(
-        map((r) => {
-          if (r.result && r.data) {
-            const totalQuantity = r.data.reduce(
-              (total, item) => total + item.quantity,
-              0
-            );
-            this.cartQuantitySubject.next(totalQuantity);
-            return r.data;
-          } else {
-            this.cartQuantitySubject.next(0);
-            return [];
-          }
+        map((resp) => resp.data || []),
+        tap((items) => {
+          this.cartItemsSubject.next(items);
+          const totalQuantity = items.reduce(
+            (total, item) => total + item.quantity,
+            0
+          );
+          this.cartQuantitySubject.next(totalQuantity);
         }),
         catchError((err) => {
+          this.cartItemsSubject.next([]);
           this.cartQuantitySubject.next(0);
           return of([]);
         })
       );
+  }
+  updateCartQuantity(productId: number, qty: number): void {
+    const updatedCart = this.cartItemsSubject.value.map((item) => {
+      if (item.productId === productId) {
+        const updatedQuantity = Math.max(1, item.quantity + qty); // Prevent quantity < 1
+        return { ...item, quantity: updatedQuantity };
+      }
+      return item;
+    });
+    this.cartItemsSubject.next(updatedCart);
+  }
+  removeCartItem(productId: number): void {
+    const updatedCart = this.cartItemsSubject.value.filter(
+      (item) => item.productId !== productId
+    );
+    this.cartItemsSubject.next(updatedCart);
   }
 }

@@ -46,6 +46,7 @@ export class ProductListComponent implements OnInit, OnChanges {
 
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
+  @Output() uDetails = new EventEmitter<User>();
   loading = false;
 
   userDetails!: User;
@@ -80,6 +81,7 @@ export class ProductListComponent implements OnInit, OnChanges {
     const userDetailsString = sessionStorage.getItem('userDetails');
     if (userDetailsString) {
       this.userDetails = JSON.parse(userDetailsString);
+      this.uDetails.emit(this.userDetails);
     } else {
       this.userDetails = {} as User;
     }
@@ -191,6 +193,10 @@ export class ProductListComponent implements OnInit, OnChanges {
           if (resp && resp.message) {
             console.log('tap resp', resp);
             this.toastr.success(resp.message);
+            this.cartService.updateCartQuantity(
+              cartData.productId,
+              this.quantity
+            );
             this.closeCart();
           } else {
             this.toastr.warning('Failed to add item to cart.');

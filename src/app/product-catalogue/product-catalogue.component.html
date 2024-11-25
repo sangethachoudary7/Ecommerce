@@ -20,7 +20,12 @@
     <app-product-list
       [selectedCategoryId]="selectedCategoryId"
       (cartItems)="cartItems($event)"
+      (uDetails)="userDetails($event)"
     ></app-product-list>
   </div>
-  <app-cart [cartItems]="cartItems$" *ngIf="isCartVisible"></app-cart>
+  <app-cart
+    [custId]="uDetails.custId"
+    [cartItems]="cartItems$"
+    *ngIf="isCartVisible"
+  ></app-cart>
 </div>
