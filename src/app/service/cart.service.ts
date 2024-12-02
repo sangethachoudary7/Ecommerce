@@ -56,9 +56,11 @@ export class CartService {
       )
       .pipe(
         tap((resp) => {
-          if (resp && resp.result) {
-            this.getCartItems(cartData.custId);
-          }
+          console.log('cart update', cartData);
+          console.log('Cart resp', resp);
+          // if (resp && resp.result) {
+          //   this.getCartItems(cartData.custId);
+          // }
         }),
         catchError((e) => {
           this.toastr.error('API request failed:', e); // Log any error
@@ -96,6 +98,15 @@ export class CartService {
           return of([]);
         })
       );
+  }
+
+  isProductInCart(productId: number): boolean {
+    const currentCart = this.cartItemsSubject.value; // Assuming cartItemsSubject holds the current cart state
+    return currentCart.some((item) => item.productId === productId);
+  }
+  getCartItem(productId: number): AddToCart | null {
+    const currentCart = this.cartItemsSubject.value;
+    return currentCart.find((item) => item.productId === productId) || null;
   }
   updateCartQuantity(productId: number, qty: number): void {
     const updatedCart = this.cartItemsSubject.value.map((item) => {

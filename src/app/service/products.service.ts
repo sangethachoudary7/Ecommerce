@@ -1,18 +1,27 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import {
+  BehaviorSubject,
+  catchError,
+  map,
+  Observable,
+  tap,
+  throwError,
+} from 'rxjs';
 import {
   AddToCart,
   ApiResponse,
   Product,
   ProductCategory,
 } from '../interface/product';
-import { Api } from './constant/constant';
+import { Api, headers } from './constant/constant';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
+  toastr: any;
+
   constructor(private http: HttpClient) {}
 
   startLoading(isLoading: boolean) {
@@ -33,16 +42,19 @@ export class ProductsService {
         })
       );
   }
-  getProductsById(id: Product): Observable<{ data: Product[] }> {
+  getProductsById(productId: number): Observable<{ data: Product }> {
+    console.log('Pid', productId);
     return this.http
-      .get<{ data: Product[] }>(
-        `${Api.API_URL}${Api.METHODS.GET_PRODUCT_BY_ID}?id=${id.productId}`
+      .get<{ data: Product }>(
+        `${Api.API_URL}${Api.METHODS.GET_PRODUCT_BY_ID}?id=${productId}`
       )
       .pipe(
         map((resp) => {
+          console.log('id', resp.data);
           return resp;
         }),
         catchError((err) => {
+          console.log('error', err);
           return throwError(() => err);
         })
       );
@@ -82,19 +94,48 @@ export class ProductsService {
         )
     );
   }
-  public updateProduct(product: AddToCart) {
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
+  addProduct(product: Product): Observable<ApiResponse<string>> {
     return this.http
-      .post(
-        `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
-        headers
+      .post<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.C_PRODOCT}`,
+        product
       )
       .pipe(
+        map((resp) => ({
+          ...resp,
+          // message: resp ? resp.message : '',
+        })),
+        catchError((e) => {
+          this.toastr.error('An error occurred while saving the product.');
+          return throwError(() => e);
+        })
+      );
+  }
+  public updateProduct(product: Product): Observable<ApiResponse<string>> {
+    console.log('Product update', product);
+    // return this.http
+    //   .post<ApiResponse<string>>(
+    //     `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
+    //     headers
+    //   )
+    return this.http
+      .post<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
+        product, // Pass the product object here
+        { headers }
+      )
+      .pipe(
+        // map((resp) => ({
+        //   // return resp;
+        //   ...resp,
+        //   // console.log('product update', resp);
+        // })),
         map((resp) => {
-          console.log('product', resp);
+          console.log('Resp', resp);
           return resp;
+        }),
+        tap((resp) => {
+          console.log('tap Resp', resp);
         }),
         catchError((e) => {
           return throwError(() => e);

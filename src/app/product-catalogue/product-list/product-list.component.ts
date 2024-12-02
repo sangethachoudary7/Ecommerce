@@ -7,19 +7,16 @@ import {
   OnChanges,
   OnInit,
   Output,
-  output,
-  SimpleChange,
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
 import {
+  BehaviorSubject,
   catchError,
-  combineLatest,
   finalize,
   map,
   Observable,
   of,
-  pipe,
   shareReplay,
   tap,
   throwError,
@@ -31,6 +28,7 @@ import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
 import { User } from '../../interface/login';
 import { CartService } from '../../service/cart.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-product-list',
@@ -47,6 +45,7 @@ export class ProductListComponent implements OnInit, OnChanges {
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
+  @Output() isUpdate = new EventEmitter<boolean>();
   loading = false;
 
   userDetails!: User;
@@ -58,11 +57,14 @@ export class ProductListComponent implements OnInit, OnChanges {
   public quantity: number = 1;
   // cartQuantity$!: Observable<number>;
   cartService = inject(CartService);
-  cartQuantity$ = this.cartService.cartQuantity$; // Bind cartQuantity$ directly from CartService
+  cartQuantity$ = this.cartService.cartQuantity$;
+  private updateVisibleSubject = new BehaviorSubject<boolean>(false);
+  // updateVisible$ = this.updateVisibleSubject.asObservable();
 
   constructor(
     private proService: ProductsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
   ngOnInit() {
     this.getUserDetails();
@@ -151,7 +153,7 @@ export class ProductListComponent implements OnInit, OnChanges {
       })
     );
   }
-  public getProductsByPId(id: Product) {
+  public getProductsByPId(id: number) {
     return this.proService
       .getProductsById(id)
       .pipe(
@@ -177,13 +179,26 @@ export class ProductListComponent implements OnInit, OnChanges {
       this.toastr.warning('No products in cart');
       return null;
     }
-    const cartData: AddToCart = {
-      cartId: 0,
-      custId: this.userDetails.custId,
-      productId: this.selectedProduct.productId,
-      quantity: this.quantity,
-      addedDate: new Date().toDateString(),
-    };
+    const existingCartItem = this.cartService.getCartItem(
+      this.selectedProduct.productId
+    );
+    let cartData: AddToCart;
+
+    if (existingCartItem) {
+      // If the product exists, update its quantity
+      cartData = {
+        ...existingCartItem,
+        quantity: existingCartItem.quantity + this.quantity, // Increment the quantity
+      };
+    } else {
+      cartData = {
+        cartId: 0,
+        custId: this.userDetails.custId,
+        productId: this.selectedProduct.productId,
+        quantity: this.quantity,
+        addedDate: new Date().toDateString(),
+      };
+    }
     this.loading = true;
 
     return this.cartService
@@ -193,10 +208,10 @@ export class ProductListComponent implements OnInit, OnChanges {
           if (resp && resp.message) {
             console.log('tap resp', resp);
             this.toastr.success(resp.message);
-            this.cartService.updateCartQuantity(
-              cartData.productId,
-              this.quantity
-            );
+            // this.cartService.updateCartQuantity(
+            //   cartData.productId,
+            //   this.quantity
+            // );
             this.closeCart();
           } else {
             this.toastr.warning('Failed to add item to cart.');
@@ -265,25 +280,9 @@ export class ProductListComponent implements OnInit, OnChanges {
       this.toastr.info('No Products Available in cart');
     }
   }
-  getCartItems1(): Observable<AddToCart[]> {
-    return this.cartService.getCartItems(this.userDetails.custId).pipe(
-      tap((resp) => {
-        console.log('Cart Items:', resp);
-        if (resp && resp.length > 0) {
-          // You can calculate the cart quantity here if needed
-          const totalQuantity = resp.reduce(
-            (sum, item) => sum + item.quantity,
-            0
-          );
-          console.log('Total Cart Quantity:', totalQuantity);
-        } else {
-          this.toastr.info('No Products Available in cart');
-        }
-      }),
-      catchError((e) => {
-        this.toastr.error('Error fetching cart items');
-        return of([]); // Return empty array on error
-      })
-    );
+  updateProduct(productId: number): void {
+    this.updateVisibleSubject.next(true);
+    this.isUpdate.emit(this.updateVisibleSubject.getValue());
+    this.router.navigate(['catalogue', 'edit-product', productId]);
   }
 }

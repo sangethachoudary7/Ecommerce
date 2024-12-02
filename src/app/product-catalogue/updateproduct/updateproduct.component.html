@@ -1,0 +1,119 @@
+<div class="main">
+  <!-- <div class="row"> -->
+  <div>
+    <button class="text-center backButton" (click)="updateProductList()">
+      <span><i class="fa fa-arrow-left fa-3x"></i></span>
+    </button>
+  </div>
+  <!-- </div> -->
+  <div class="add-product-container" *ngIf="product$ | async as product">
+    <h2>Update Product</h2>
+    <form
+      class="product-form"
+      [formGroup]="productForm"
+      (ngSubmit)="updateProduct()"
+    >
+      <div class="form-group">
+        <label for="productName">Product Name</label>
+        <input
+          type="text"
+          id="productName"
+          name="productName"
+          formControlName="productName"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="productSku">Product Unit</label>
+        <input
+          type="text"
+          id="productSku"
+          name="productSku"
+          formControlName="productSku"
+          placeholder="eg:u1"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="productShortName">Product Short Name</label>
+        <input
+          type="text"
+          id="productShortName"
+          name="productShortName"
+          formControlName="productShortName"
+          required
+        />
+      </div>
+      <div class="form-group">
+        <label for="productPrice">Price</label>
+        <input
+          type="number"
+          id="productPrice"
+          name="productPrice"
+          formControlName="productPrice"
+          placeholder="Enter product price"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="productDescription">Description</label>
+        <textarea
+          id="productDescription"
+          name="productDescription"
+          formControlName="productDescription"
+          placeholder="Enter product description"
+          rows="4"
+          required
+        ></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="productCategory">Category</label>
+        <select
+          id="productCategory"
+          name="productCategory"
+          formControlName="productCategory"
+          required
+          [compareWith]="compareCategories"
+        >
+          <option value="" disabled>Select category</option>
+          <option *ngFor="let c of category$ | async" [ngValue]="c">
+            {{ c.categoryName }}
+          </option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="productImageUrl">Image URL</label>
+        <input
+          type="url"
+          id="productImageUrl"
+          name="productImageUrl"
+          formControlName="productImageUrl"
+          placeholder="Enter product image URL"
+        />
+      </div>
+      <div class="form-group">
+        <label for="delivery">Delivery</label>
+        <input
+          type="text"
+          id="delivery"
+          name="deliveryTimeSpan"
+          formControlName="deliveryTimeSpan"
+        />
+      </div>
+      <button type="submit" class="btn-submit" [disabled]="isSubmitting">
+        Update Product
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- <div class="add-product-container" *ngIf="product$ | async as product">
+  <p>welcome</p>
+</div> -->
+<!-- [ngValue]="{
+  categoryId: c.categoryId,
+  categoryName: c.categoryName
+}" -->

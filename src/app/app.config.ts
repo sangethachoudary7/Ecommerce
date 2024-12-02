@@ -1,5 +1,5 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding } from '@angular/router';
 
 import { routes } from './app.routes';
 import { provideHttpClient } from '@angular/common/http';
@@ -18,3 +18,5 @@ export const appConfig: ApplicationConfig = {
     // Add ToastrModule globally here
   ],
 };
+
+// to get dynamic rout perameter as input provideRouter(routes, withComponentInputBinding()),

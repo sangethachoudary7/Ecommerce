@@ -1,8 +1,9 @@
 import { HttpHeaders } from '@angular/common/http';
 
 export const Api = {
-  // API_URL: '/api/amazon/',
-  API_URL: '/api/BigBasket/',
+  API_URL: '/api/amazon/',
+  // API_URL: '/api/Ecommerce/',
+  // API_URL: '/api/BigBasket/',
   METHODS: {
     LOGIN: 'Login',
     REGISTER: 'RegisterCustomer',

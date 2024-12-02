@@ -9,8 +9,10 @@ export interface Product {
   deliveryTimeSpan: string;
   categoryId: number;
   productImageUrl: string;
-  KcategoryName?: string;
-  quantity?: number;
+  categoryName?: string;
+  // quantity?: number;
+  custId?: number;
+  // cartId?: number;
 }
 
 export interface ProductCategory {

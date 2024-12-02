@@ -1,26 +1,15 @@
-<!-- <app-product-category></app-product-category>
-<app-product-list></app-product-list> -->
-<!-- <div class="category">
-  <app-product-category></app-product-category>
-</div> -->
-
-<!-- <div class="product-list">
-  <app-product-list
-    [selectedCategoryId]="selectedCategoryId"
-  ></app-product-list>
-</div> -->
-
 <div class="product-catalogue">
-  <div class="category" *ngIf="!isCartVisible">
+  <div class="category" *ngIf="!isCartVisible && !isUpdateVisible">
     <app-product-category
       (sCategoryId)="onCategorySelected($event)"
     ></app-product-category>
   </div>
-  <div class="product-list" *ngIf="!isCartVisible">
+  <div class="product-list" *ngIf="!isCartVisible && !isUpdateVisible">
     <app-product-list
       [selectedCategoryId]="selectedCategoryId"
       (cartItems)="cartItems($event)"
       (uDetails)="userDetails($event)"
+      (isUpdate)="onUpdateVisibilityChange($event)"
     ></app-product-list>
   </div>
   <app-cart
@@ -28,4 +17,7 @@
     [cartItems]="cartItems$"
     *ngIf="isCartVisible"
   ></app-cart>
+  <div *ngIf="isUpdateVisible">
+    <router-outlet></router-outlet>
+  </div>
 </div>
