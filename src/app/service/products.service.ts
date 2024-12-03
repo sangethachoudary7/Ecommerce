@@ -76,23 +76,18 @@ export class ProductsService {
   public getProductsByCategoryId(
     categoryId: number
   ): Observable<{ data: Product[] }> {
-    return (
-      this.http
-        .get<{ data: Product[] }>(
-          `${Api.API_URL}${Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID}?id=${categoryId}`
-        )
-        // (
-        // Api.API_URL + Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID + '/' + categoryId
-        // )
-        .pipe(
-          map((resp) => {
-            return resp;
-          }),
-          catchError((err) => {
-            return throwError(() => err);
-          })
-        )
-    );
+    return this.http
+      .get<{ data: Product[] }>(
+        `${Api.API_URL}${Api.METHODS.GET_PRODUCTS_BY_CATEGORY_ID}?id=${categoryId}`
+      )
+      .pipe(
+        map((resp) => {
+          return resp;
+        }),
+        catchError((err) => {
+          return throwError(() => err);
+        })
+      );
   }
   addProduct(product: Product): Observable<ApiResponse<string>> {
     return this.http
@@ -103,7 +98,6 @@ export class ProductsService {
       .pipe(
         map((resp) => ({
           ...resp,
-          // message: resp ? resp.message : '',
         })),
         catchError((e) => {
           this.toastr.error('An error occurred while saving the product.');
@@ -112,12 +106,6 @@ export class ProductsService {
       );
   }
   public updateProduct(product: Product): Observable<ApiResponse<string>> {
-    console.log('Product update', product);
-    // return this.http
-    //   .post<ApiResponse<string>>(
-    //     `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
-    //     headers
-    //   )
     return this.http
       .post<ApiResponse<string>>(
         `${Api.API_URL}${Api.METHODS.U_PRODOCT}?id=${product.productId}`,
@@ -125,11 +113,6 @@ export class ProductsService {
         { headers }
       )
       .pipe(
-        // map((resp) => ({
-        //   // return resp;
-        //   ...resp,
-        //   // console.log('product update', resp);
-        // })),
         map((resp) => {
           console.log('Resp', resp);
           return resp;

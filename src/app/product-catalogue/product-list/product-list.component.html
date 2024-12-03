@@ -1,11 +1,5 @@
 <div class="catalogue-container">
   <app-loading-spinner [isLoading]="loading"></app-loading-spinner>
-
-  <!-- <div class="category">
-    <app-product-category
-      (sCategoryId)="onCategorySelected($event)"
-    ></app-product-category>
-  </div> -->
   <div class="product-list">
     <main>
       <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">
@@ -41,7 +35,7 @@
             (click)="getCartItems()"
           >
             <i class="fas fa-shopping-cart marginright total-count">
-              {{ cartQuantity$ | async }}</i
+              {{ (cartItems$ | async)?.length || 0 }}</i
             >
           </button>
 

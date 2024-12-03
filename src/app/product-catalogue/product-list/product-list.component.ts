@@ -14,10 +14,13 @@ import {
   BehaviorSubject,
   catchError,
   finalize,
+  isEmpty,
   map,
   Observable,
   of,
   shareReplay,
+  switchMap,
+  take,
   tap,
   throwError,
 } from 'rxjs';
@@ -41,11 +44,13 @@ export class ProductListComponent implements OnInit, OnChanges {
   public prodList$!: Observable<Product[]>;
   public cartItems$!: Observable<AddToCart[]>;
   public selectedProductDetails$!: Observable<Product>;
+  public cartQuantity$!: Observable<number>;
 
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
   @Output() isUpdate = new EventEmitter<boolean>();
+  @Output() isCart = new EventEmitter<boolean>();
   loading = false;
 
   userDetails!: User;
@@ -55,23 +60,34 @@ export class ProductListComponent implements OnInit, OnChanges {
 
   public selectedProduct!: Product | null;
   public quantity: number = 1;
-  // cartQuantity$!: Observable<number>;
+
   cartService = inject(CartService);
-  cartQuantity$ = this.cartService.cartQuantity$;
+  // cartQuantity$ = this.cartService.cartQuantity$;
   private updateVisibleSubject = new BehaviorSubject<boolean>(false);
+  private updateCartVisibleSubject = new BehaviorSubject<boolean>(false);
+
   // updateVisible$ = this.updateVisibleSubject.asObservable();
 
   constructor(
     private proService: ProductsService,
     private toastr: ToastrService,
     private router: Router
-  ) {}
+  ) {
+    // this.getUserDetails();
+    // this.loadProducts();
+    // if (this.userDetails && this.userDetails.custId) {
+    //   this.cartItems$ = this.cartService.getCartItems(this.userDetails.custId);
+    //   this.cartQuantity$ = this.cartItems$.pipe(
+    //     map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
+    //   );
+    //   this.cartItems$ = this.cartService.cartItems$;
+    //   this.cartQuantity$ = this.cartService.cartQuantity$;
+    // }
+  }
   ngOnInit() {
     this.getUserDetails();
     this.loadProducts();
     if (this.userDetails && this.userDetails.custId) {
-      // Fetch cart items and update quantity
-      // this.cartItems$ = this.getCartItems1();
       this.cartItems$ = this.cartService.getCartItems(this.userDetails.custId);
       this.cartQuantity$ = this.cartItems$.pipe(
         map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
@@ -93,7 +109,7 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.proService.startLoading(this.loading);
 
     if (this.selectedCategoryId !== null) {
-      this.prodList$ = this.getProductsById(this.selectedCategoryId).pipe(
+      this.prodList$ = this.getProductsByCId(this.selectedCategoryId).pipe(
         shareReplay(1),
         tap((p) => {
           if (p.length === 0) {
@@ -142,7 +158,7 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.selectedCategoryId = categoryId;
   }
 
-  getProductsById(categoryId: number): Observable<Product[]> {
+  getProductsByCId(categoryId: number): Observable<Product[]> {
     return this.proService.getProductsByCategoryId(categoryId).pipe(
       map((resp) => {
         return resp.data;
@@ -169,9 +185,18 @@ export class ProductListComponent implements OnInit, OnChanges {
       .subscribe();
   }
   showProductDetails(product: Product) {
+    //   const isProductExist = this.cartService.getCartItem(product.productId);
+    //  if (isProductExist) {
+    //     this.quantity = isProductExist.quantity;
+    //   }
+    //   this.selectedProduct = product;
+    //   this.isCartHidden = false;
+
+    this.cartService.cartItems$.pipe(
+      map((ci) => ci.find((i) => i.productId === product.productId))
+    );
     this.selectedProduct = product;
     this.isCartHidden = false;
-    // this.quantity = 1;
   }
 
   addToCart() {
@@ -185,11 +210,11 @@ export class ProductListComponent implements OnInit, OnChanges {
     let cartData: AddToCart;
 
     if (existingCartItem) {
-      // If the product exists, update its quantity
       cartData = {
         ...existingCartItem,
-        quantity: existingCartItem.quantity + this.quantity, // Increment the quantity
+        quantity: this.quantity, // Increment the quantity
       };
+      console.log('Cd', cartData);
     } else {
       cartData = {
         cartId: 0,
@@ -206,12 +231,15 @@ export class ProductListComponent implements OnInit, OnChanges {
       .pipe(
         tap((resp: ApiResponse<string>) => {
           if (resp && resp.message) {
-            console.log('tap resp', resp);
+            this.cartItems$ = this.cartService.getCartItems(
+              this.userDetails.custId
+            );
+            this.cartQuantity$ = this.cartItems$.pipe(
+              map((items) =>
+                items.reduce((sum, item) => sum + item.quantity, 0)
+              )
+            );
             this.toastr.success(resp.message);
-            // this.cartService.updateCartQuantity(
-            //   cartData.productId,
-            //   this.quantity
-            // );
             this.closeCart();
           } else {
             this.toastr.warning('Failed to add item to cart.');
@@ -243,20 +271,37 @@ export class ProductListComponent implements OnInit, OnChanges {
   }
 
   clearCart() {
-    this.cartService.removeItemByCartId(this.userDetails.custId).pipe(
-      map((resp) => {
-        if (resp && resp.message) {
-          this.decrementQuantity();
-          this.toastr.success(resp.message);
-        }
-      }),
-      catchError((e) => {
-        this.toastr.error(e);
-        return throwError(() => e);
-      })
-    );
-    this.cartService.resetCart();
-    this.toastr.info('Cart cleared!');
+    return this.cartQuantity$
+      .pipe(
+        take(1), // Ensure only the latest cart quantity is used
+        switchMap((quantity) => {
+          if (quantity > 0) {
+            return this.cartService.deleteCartProductByCartId(6194).pipe(
+              tap((resp) => {
+                if (resp.result && resp.message) {
+                  this.toastr.success(resp.message);
+                  this.cartItems$ = this.cartService.getCartItems(
+                    this.userDetails.custId
+                  );
+                  this.cartQuantity$ = this.cartItems$.pipe(
+                    map((items) =>
+                      items.reduce((sum, item) => sum + item.quantity, 0)
+                    )
+                  );
+                }
+              }),
+              catchError((e) => {
+                this.toastr.error('Error occurred while clearing the cart.');
+                return throwError(() => e);
+              })
+            );
+          } else {
+            this.toastr.info('No products in Cart to clear!');
+            return of(null); // Emit null if there are no products to clear
+          }
+        })
+      )
+      .subscribe();
   }
   getCartItems() {
     if (this.cartQuantity$) {

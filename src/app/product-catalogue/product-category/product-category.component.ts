@@ -2,14 +2,18 @@ import {
   ChangeDetectorRef,
   Component,
   EventEmitter,
+  Input,
+  OnDestroy,
   OnInit,
   Output,
+  SimpleChanges,
 } from '@angular/core';
 import { ProductsService } from '../../service/products.service';
 import { ProductCategory } from '../../interface/product';
 import { catchError, map, Observable, throwError } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
+import { CartService } from '../../service/cart.service';
 
 @Component({
   selector: 'app-product-category',
@@ -29,9 +33,18 @@ export class ProductCategoryComponent implements OnInit {
 
   constructor(
     private proServ: ProductsService,
-    private cd: ChangeDetectorRef
+    private cd: ChangeDetectorRef,
+    private carts: CartService
   ) {}
+
   ngOnInit() {
+    this.carts.cartVisible$.subscribe(() => {
+      this.loadCategories();
+    });
+    this.loadCategories();
+  }
+
+  private loadCategories() {
     this.category$ = this.proServ.getCategory().pipe(
       map((resp) => {
         this.categories = resp.data;
@@ -46,7 +59,6 @@ export class ProductCategoryComponent implements OnInit {
       })
     );
   }
-
   toggleDropdown(categoryId: number): void {
     // this.selectedCategoryId =
     //   this.selectedCategoryId === categoryId ? null : categoryId;

@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, inject, input } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  EventEmitter,
+  inject,
+  input,
+  Output,
+} from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -20,6 +27,7 @@ import {
 import { ProductCategory, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { CartService } from '../../service/cart.service';
 
 @Component({
   selector: 'app-updateproduct',
@@ -36,12 +44,14 @@ export class UpdateproductComponent {
   public product$!: Observable<Product>;
   productId!: number;
   private desRef = inject(DestroyRef);
+
   constructor(
     private fb: FormBuilder,
     private proServ: ProductsService,
     private toastr: ToastrService,
     private actRrouter: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private cartService: CartService
   ) {
     this.productForm = this.fb.group({
       productName: ['', [Validators.required, Validators.minLength(3)]],
@@ -141,6 +151,7 @@ export class UpdateproductComponent {
           if (resp.result) {
             this.toastr.success(resp.message ?? 'Operation successful');
             this.productForm.reset();
+            this.updateProductList();
           } else {
             this.toastr.warning(resp.message ?? 'Something went wrong');
           }
@@ -165,6 +176,6 @@ export class UpdateproductComponent {
       : false;
   }
   updateProductList() {
-    this.router.navigate(['catalogue']);
+    this.router.navigate(['/catalogue']);
   }
 }

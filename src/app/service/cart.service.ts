@@ -38,8 +38,10 @@ export class CartService {
   );
 
   toggleCartVisibility() {
-    const currenState = this.cartQuantitySubject.value;
+    const currenState = this.cartVisibleSubject.value;
     this.cartVisibleSubject.next(!currenState);
+    // const currentQty = this.cartQuantitySubject.value;
+    // this.cartQuantitySubject.next(currentQty);
     console.log('subValue', currenState);
   }
   public addToCart(cartData: AddToCart): Observable<ApiResponse<string>> {
@@ -72,11 +74,21 @@ export class CartService {
   public resetCart() {
     this.cartQuantitySubject.next(0);
   }
-  public removeItemByCartId(cartId: number): Observable<ApiResponse<string>> {
-    return this.http.delete<ApiResponse<string>>(
-      `${Api.API_URL} ${Api.METHODS.D_P_FROM_CART_BY_ID} / ${cartId}`
-    );
-  }
+  // public removeItemByCustId(custId: number): Observable<ApiResponse<string>> {
+  //   return this.http
+  //     .delete<ApiResponse<string>>(
+  //       `${Api.API_URL} ${Api.METHODS.D_P_FROM_CART_BY_CUST_ID} / ${custId}`
+  //     )
+  //     .pipe(
+  //       tap((resp) => {
+  //         console.log('custid pd', resp);
+  //         this.cartQuantitySubject.next(resp.data?.length || 0);
+  //       }),
+  //       catchError((err) => {
+  //         return throwError(() => err);
+  //       })
+  //     );
+  // }
   public getCartItems(custId: number): Observable<AddToCart[]> {
     return this.http
       .get<ApiResponse<AddToCart[]>>(
@@ -123,5 +135,20 @@ export class CartService {
       (item) => item.productId !== productId
     );
     this.cartItemsSubject.next(updatedCart);
+  }
+  deleteCartProductByCartId(cartId: number): Observable<ApiResponse<string>> {
+    return this.http
+      .get<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.D_P_FROM_CART_BY_CART_ID}?id=${cartId}`
+      )
+      .pipe(
+        tap((resp) => {
+          console.log('r.messge', resp.message);
+          this.getCartItems(cartId).subscribe();
+        }),
+        catchError((err) => {
+          return throwError(() => err);
+        })
+      );
   }
 }

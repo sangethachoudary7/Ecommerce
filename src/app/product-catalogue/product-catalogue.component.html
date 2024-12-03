@@ -4,8 +4,9 @@
       (sCategoryId)="onCategorySelected($event)"
     ></app-product-category>
   </div>
-  <div class="product-list" *ngIf="!isCartVisible && !isUpdateVisible">
+  <div class="product-list">
     <app-product-list
+      *ngIf="!isCartVisible && !isUpdateVisible"
       [selectedCategoryId]="selectedCategoryId"
       (cartItems)="cartItems($event)"
       (uDetails)="userDetails($event)"
@@ -21,3 +22,6 @@
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<!-- cartVisible$ -->
+<!-- *ngIf="!isCartVisible && !isUpdateVisible" -->

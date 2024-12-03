@@ -33,10 +33,14 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: ProductListComponent,
+        component: ProductCatalogueComponent,
       },
       {
-        path: 'category/:categoryId',
+        path: 'category',
+        component: ProductCategoryComponent,
+      },
+      {
+        path: 'product',
         component: ProductListComponent,
       },
       {
