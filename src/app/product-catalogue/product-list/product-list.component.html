@@ -1,5 +1,7 @@
 <div class="catalogue-container">
-  <app-loading-spinner [isLoading]="loading"></app-loading-spinner>
+  <!-- <app-loading-spinner
+    [isLoading]="(this.loading$ | async) ?? false"
+  ></app-loading-spinner> -->
   <div class="product-list">
     <main>
       <nav class="navbar navbar-expand-lg navbar-dark fixed-top bg-dark">

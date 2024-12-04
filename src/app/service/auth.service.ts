@@ -45,42 +45,7 @@ export class AuthService {
       return Object.keys(validationErrors).length ? validationErrors : null;
     };
   }
-
-  login(uname: string, pword: string): Observable<any> {
-    const loginData = {
-      username: uname,
-      password: pword,
-    };
-    const headers = new HttpHeaders({
-      'Content-Type': 'application/json',
-    });
-
-    return this.http
-      .post<LoginResponse>(
-        LoginApi.loginUrl + LoginApi.METHODS.LOGIN,
-        loginData,
-        {
-          headers,
-        }
-      )
-      .pipe(
-        map((response) => {
-          if (response && response.token) {
-            localStorage.setItem('authToken', response.token);
-          }
-          return response;
-        }),
-        catchError((error) => {
-          this.toastr.warning(error);
-          return throwError(() => error);
-        })
-      );
-  }
-  login1(logData: Login): Observable<any> {
-    // const loginData = {
-    //   UserName: uname,
-    //   UserPassword: pword,
-    // };
+  login(logData: Login): Observable<any> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json-patch+json',
       accept: 'text/plain',

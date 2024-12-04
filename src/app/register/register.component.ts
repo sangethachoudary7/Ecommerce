@@ -9,9 +9,10 @@ import {
 } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { Registration } from '../interface/register';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, finalize, of, switchMap } from 'rxjs';
 import { Router } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
+import { GlobalService } from '../service/global.service';
 
 @Component({
   selector: 'app-register',
@@ -27,7 +28,8 @@ export class RegisterComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private gloabservice: GlobalService
   ) {}
   ngOnInit() {
     this.registerForm = this.fb.group({
@@ -65,6 +67,7 @@ export class RegisterComponent implements OnInit {
     }
   }
   onSubmit() {
+    this.gloabservice.startLoading();
     if (this.registerForm.valid) {
       const { userName, mobileNo, Password } = this.registerForm.value;
       const regData: Registration = {
@@ -90,6 +93,9 @@ export class RegisterComponent implements OnInit {
           catchError((error) => {
             this.toastr.error(error);
             return of(null);
+          }),
+          finalize(() => {
+            this.gloabservice.stopLoading(); // Stop loading in all cases
           })
         )
         .subscribe();

@@ -11,6 +11,7 @@ import { ToastrService } from 'ngx-toastr';
 import { ProductsService } from '../service/products.service';
 import { catchError, finalize, map, Observable, tap, throwError } from 'rxjs';
 import { CommonModule } from '@angular/common';
+import { GlobalService } from '../service/global.service';
 
 @Component({
   selector: 'app-create-product',
@@ -22,12 +23,13 @@ import { CommonModule } from '@angular/common';
 export class CreateProductComponent {
   productForm: FormGroup;
   categories: ProductCategory[] = [];
-  isSubmitting: boolean = false;
+  // isSubmitting: boolean = false;
   public category$!: Observable<ProductCategory[]>;
   constructor(
     private fb: FormBuilder,
     private proServ: ProductsService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private globalServ: GlobalService
   ) {
     this.productForm = this.fb.group({
       productName: ['', [Validators.required, Validators.minLength(3)]],
@@ -71,7 +73,7 @@ export class CreateProductComponent {
       categoryName: productData.productCategory.categoryName,
     };
     console.log('product data', productToSend);
-    this.isSubmitting = true;
+    this.globalServ.startLoading();
 
     this.proServ
       .addProduct(productToSend)
@@ -86,8 +88,7 @@ export class CreateProductComponent {
         }),
 
         finalize(() => {
-          this.isSubmitting = false;
-          this.proServ.startLoading(this.isSubmitting);
+          this.globalServ.stopLoading();
         })
       )
       .subscribe();

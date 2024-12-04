@@ -5,6 +5,7 @@ import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { AddToCart, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-cart',
@@ -19,7 +20,7 @@ export class CartComponent implements OnInit {
   cartService = inject(CartService);
   proService = inject(ProductsService);
   toastr = inject(ToastrService);
-
+  router = inject(Router);
   ngOnInit() {
     if (this.custId) {
       this.cartService.getCartItems(this.custId).subscribe();
@@ -57,5 +58,8 @@ export class CartComponent implements OnInit {
 
   get totalPrice$() {
     return this.cartService.totalPrice$;
+  }
+  updateProductList() {
+    this.router.navigate(['/catalogue']);
   }
 }

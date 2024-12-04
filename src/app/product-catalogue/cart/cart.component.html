@@ -1,12 +1,17 @@
 <section class="h-100 gradient-custom">
+  <div>
+    <button class="text-center backButton" (click)="updateProductList()">
+      <span><i class="fa fa-arrow-left fa-3x"></i></span>
+    </button>
+  </div>
   <div class="container py-5">
     <div class="row d-flex justify-content-center my-4">
       <div class="col-md-8">
         <div class="card mb-4">
           <div class="card-header py-3">
-            <h5 class="mb-0">
+            <h2 class="mb-0">
               Cart - {{ (cartItems | async)?.length || 0 }} items
-            </h5>
+            </h2>
           </div>
           <div class="card-body" *ngIf="cartItems | async as items">
             <!-- Single item -->

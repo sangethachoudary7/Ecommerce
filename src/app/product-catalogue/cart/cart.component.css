@@ -1,18 +1,26 @@
-/* .gradient-custom {
-  background: #6a11cb;
+.backButton {
+  border-radius: 350% !important;
+  background-color: rgba(212, 185, 199, 0.8);
+  color: rgb(236, 8, 168);
+  border: none !important;
+  padding: 20px 20px !important;
+  -webkit-transition: background-color 1s, color 1s, -webkit-transform 0.5s;
+  transition: background-color 1s, transform 0.5s;
+}
 
-  background: -webkit-linear-gradient(
-    to right,
-    rgba(106, 17, 203, 1),
-    rgba(37, 117, 252, 1)
-  );
-
-  background: linear-gradient(
-    to right,
-    rgba(106, 17, 203, 1),
-    rgba(37, 117, 252, 1)
-  );
-} */
+.backButton:hover {
+  background-color: #f5545433;
+  color: rgb(231, 16, 185);
+  -webkit-transform: translateX(-5px);
+  transform: translateX(-5px);
+  -webkit-box-shadow: 5px 0px 18px 0px rgba(105, 105, 105, 0.8);
+  -moz-box-shadow: 5px 0px 18px 0px rgba(105, 105, 105, 0.8);
+  box-shadow: 5px 0px 18px 0px rgba(105, 105, 105, 0.8);
+}
+h2 {
+  color: deeppink;
+  font-weight: bold;
+}
 .gradient-custom {
   background: #6a11cb;
   background: -webkit-linear-gradient(

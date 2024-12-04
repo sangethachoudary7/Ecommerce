@@ -8,6 +8,7 @@ import { ProductListComponent } from './product-catalogue/product-list/product-l
 import { CreateProductComponent } from './create-product/create-product.component';
 import { UpdateproductComponent } from './product-catalogue/updateproduct/updateproduct.component';
 import { NgModule } from '@angular/core';
+import { CartComponent } from './product-catalogue/cart/cart.component';
 
 export const routes: Routes = [
   {
@@ -50,6 +51,10 @@ export const routes: Routes = [
       {
         path: 'product/:productId',
         component: ProductDetailsComponent,
+      },
+      {
+        path: 'cart',
+        component: CartComponent,
       },
     ],
   },

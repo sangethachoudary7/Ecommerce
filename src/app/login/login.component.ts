@@ -13,8 +13,9 @@ import { CommonModule } from '@angular/common';
 import { Router, RouterOutlet } from '@angular/router';
 import { ProductCatalogueComponent } from '../product-catalogue/product-catalogue.component';
 import { AuthService } from '../service/auth.service';
-import { catchError, of, switchMap } from 'rxjs';
+import { catchError, finalize, of, switchMap } from 'rxjs';
 import { Login } from '../interface/login';
+import { GlobalService } from '../service/global.service';
 
 export function customPasswordValidator(): ValidatorFn {
   return (control: AbstractControl): ValidationErrors | null => {
@@ -59,14 +60,15 @@ export class AuthenticationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    private globalServ: GlobalService
   ) {}
 
   ngOnInit(): void {
     this.loginForm = this.fb.group({
       userName: ['', Validators.required],
       passWord: ['', Validators.required],
-      rememberMe: [false], // Default value for rememberMe
+      rememberMe: [false],
     });
 
     const rememberMe = localStorage.getItem('rememberMe');
@@ -91,6 +93,7 @@ export class AuthenticationComponent implements OnInit {
     return unameCheck.invalid && (unameCheck.dirty || unameCheck.touched);
   }
   onSubmit() {
+    this.globalServ.startLoading();
     if (this.loginForm.valid) {
       const { userName, passWord, rememberMe } = this.loginForm.value;
       if (rememberMe) {
@@ -103,7 +106,7 @@ export class AuthenticationComponent implements OnInit {
         UserPassword: passWord,
       };
       this.authService
-        .login1(loginData)
+        .login(loginData)
         .pipe(
           switchMap((response) => {
             if (response && response.result) {
@@ -121,6 +124,9 @@ export class AuthenticationComponent implements OnInit {
           }),
           catchError((e) => {
             return of(null);
+          }),
+          finalize(() => {
+            this.globalServ.stopLoading(); // Stop loading in all cases
           })
         )
         .subscribe();
@@ -128,48 +134,4 @@ export class AuthenticationComponent implements OnInit {
       console.log('Form is invalid!');
     }
   }
-  // onSubmit() {
-  //   if (this.loginForm.valid) {
-  //     const { userName, passWord, rememberMe } = this.loginForm.value;
-  //     console.log('UserName:', userName, 'Password:', passWord);
-  //     if (rememberMe) {
-  //       localStorage.setItem('rememberMe', 'true');
-  //     } else {
-  //       localStorage.removeItem('rememberMe');
-  //     }
-
-  //     this.authService
-  //       .login(userName, passWord)
-  //       .pipe(
-  //         switchMap((response) => {
-  //           console.log('Response from login:', response);
-  //           if (response && response.token) {
-  //             // if (response && response.result) {
-  //             return this.router.navigateByUrl('/products'); // navigate on success
-  //           } else {
-  //             alert(response.message);
-  //             return of(null); // fallback if no token is returned
-  //           }
-  //         }),
-  //         catchError((e) => {
-  //           console.error('Login error', e);
-  //           return of(null);
-  //         })
-  //       )
-  //       .subscribe();
-  //   } else {
-  //     console.log('Form is invalid!');
-  //   }
-  // }
 }
-
-// loginForm = new FormGroup({
-//   userName: new FormControl('', Validators.required),
-//   passWord: new FormControl('', {
-//     validators: [
-//       Validators.required,
-//       customPasswordValidator(),
-//     ],
-//   }),
-//   rememberMe: new FormControl(false),
-// });

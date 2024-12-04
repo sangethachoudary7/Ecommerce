@@ -14,6 +14,7 @@ import {
   BehaviorSubject,
   catchError,
   finalize,
+  forkJoin,
   isEmpty,
   map,
   Observable,
@@ -28,15 +29,15 @@ import { ProductsService } from '../../service/products.service';
 import { CommonModule } from '@angular/common';
 import { AddToCart, ApiResponse, Product } from '../../interface/product';
 import { ToastrService } from 'ngx-toastr';
-import { LoadingSpinnerComponent } from '../../loading-spinner/loading-spinner.component';
 import { User } from '../../interface/login';
 import { CartService } from '../../service/cart.service';
 import { Router } from '@angular/router';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent],
+  imports: [CommonModule],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.css',
 })
@@ -45,44 +46,31 @@ export class ProductListComponent implements OnInit, OnChanges {
   public cartItems$!: Observable<AddToCart[]>;
   public selectedProductDetails$!: Observable<Product>;
   public cartQuantity$!: Observable<number>;
+  public loading$!: Observable<boolean>;
 
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
   @Output() isUpdate = new EventEmitter<boolean>();
   @Output() isCart = new EventEmitter<boolean>();
-  loading = false;
-
   userDetails!: User;
 
   @ViewChild('cartWindow') cartWindow!: ElementRef;
   isCartHidden = true;
 
   public selectedProduct!: Product | null;
-  public quantity: number = 1;
+  public quantity: number = 0;
 
   cartService = inject(CartService);
-  // cartQuantity$ = this.cartService.cartQuantity$;
   private updateVisibleSubject = new BehaviorSubject<boolean>(false);
-  private updateCartVisibleSubject = new BehaviorSubject<boolean>(false);
-
-  // updateVisible$ = this.updateVisibleSubject.asObservable();
 
   constructor(
     private proService: ProductsService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private globalServ: GlobalService
   ) {
-    // this.getUserDetails();
-    // this.loadProducts();
-    // if (this.userDetails && this.userDetails.custId) {
-    //   this.cartItems$ = this.cartService.getCartItems(this.userDetails.custId);
-    //   this.cartQuantity$ = this.cartItems$.pipe(
-    //     map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
-    //   );
-    //   this.cartItems$ = this.cartService.cartItems$;
-    //   this.cartQuantity$ = this.cartService.cartQuantity$;
-    // }
+    this.loading$ = this.globalServ.loading$;
   }
   ngOnInit() {
     this.getUserDetails();
@@ -105,9 +93,7 @@ export class ProductListComponent implements OnInit, OnChanges {
     }
   }
   private loadProducts() {
-    this.loading = true;
-    this.proService.startLoading(this.loading);
-
+    this.globalServ.startLoading();
     if (this.selectedCategoryId !== null) {
       this.prodList$ = this.getProductsByCId(this.selectedCategoryId).pipe(
         shareReplay(1),
@@ -115,13 +101,12 @@ export class ProductListComponent implements OnInit, OnChanges {
           if (p.length === 0) {
             this.toastr.warning('No products found for the selected category');
           }
-          this.loading = false;
-          this.proService.startLoading(this.loading);
         }),
         catchError((e) => {
-          this.loading = false;
-          this.proService.startLoading(this.loading);
           return throwError(() => e);
+        }),
+        finalize(() => {
+          this.globalServ.stopLoading();
         })
       );
     } else {
@@ -134,13 +119,12 @@ export class ProductListComponent implements OnInit, OnChanges {
           if (p.length === 0) {
             this.toastr.warning('No products available!');
           }
-          this.loading = false;
-          this.proService.startLoading(this.loading);
         }),
         catchError((e) => {
-          this.loading = false;
-          this.proService.startLoading(this.loading);
           return throwError(() => {});
+        }),
+        finalize(() => {
+          this.globalServ.stopLoading();
         })
       );
     }
@@ -159,6 +143,7 @@ export class ProductListComponent implements OnInit, OnChanges {
   }
 
   getProductsByCId(categoryId: number): Observable<Product[]> {
+    this.globalServ.startLoading();
     return this.proService.getProductsByCategoryId(categoryId).pipe(
       map((resp) => {
         return resp.data;
@@ -166,10 +151,14 @@ export class ProductListComponent implements OnInit, OnChanges {
       catchError((e) => {
         this.toastr.success('API Error', 'Contact Admin');
         return of([]);
+      }),
+      finalize(() => {
+        this.globalServ.stopLoading();
       })
     );
   }
   public getProductsByPId(id: number) {
+    this.globalServ.startLoading();
     return this.proService
       .getProductsById(id)
       .pipe(
@@ -180,26 +169,26 @@ export class ProductListComponent implements OnInit, OnChanges {
         catchError((e) => {
           this.toastr.success('API Error', 'Contact Admin');
           return of([]);
+        }),
+        finalize(() => {
+          this.globalServ.startLoading();
         })
       )
       .subscribe();
   }
   showProductDetails(product: Product) {
-    //   const isProductExist = this.cartService.getCartItem(product.productId);
-    //  if (isProductExist) {
-    //     this.quantity = isProductExist.quantity;
-    //   }
-    //   this.selectedProduct = product;
-    //   this.isCartHidden = false;
-
-    this.cartService.cartItems$.pipe(
-      map((ci) => ci.find((i) => i.productId === product.productId))
-    );
+    this.globalServ.startLoading();
+    const isProductExist = this.cartService.getCartItem(product.productId);
+    if (isProductExist) {
+      this.quantity = isProductExist.quantity;
+    }
     this.selectedProduct = product;
     this.isCartHidden = false;
+    this.globalServ.stopLoading();
   }
 
   addToCart() {
+    this.globalServ.startLoading();
     if (!this.selectedProduct || this.quantity <= 0) {
       this.toastr.warning('No products in cart');
       return null;
@@ -224,7 +213,6 @@ export class ProductListComponent implements OnInit, OnChanges {
         addedDate: new Date().toDateString(),
       };
     }
-    this.loading = true;
 
     return this.cartService
       .addToCart(cartData)
@@ -241,24 +229,24 @@ export class ProductListComponent implements OnInit, OnChanges {
             );
             this.toastr.success(resp.message);
             this.closeCart();
+            this.quantity = 0;
           } else {
             this.toastr.warning('Failed to add item to cart.');
           }
         }),
         catchError((error) => {
-          this.toastr.error('Error adding item to cart. Please try again.');
+          this.toastr.error(error);
           return [];
-          // return throwError(() => error);
         }),
         finalize(() => {
-          this.loading = false;
-          this.proService.startLoading(this.loading);
+          this.globalServ.stopLoading();
         })
       )
       .subscribe();
   }
   closeCart() {
     this.isCartHidden = true;
+    this.quantity = 0;
   }
   incrementQuantity() {
     this.quantity += 1;
@@ -270,40 +258,8 @@ export class ProductListComponent implements OnInit, OnChanges {
     }
   }
 
-  clearCart() {
-    return this.cartQuantity$
-      .pipe(
-        take(1), // Ensure only the latest cart quantity is used
-        switchMap((quantity) => {
-          if (quantity > 0) {
-            return this.cartService.deleteCartProductByCartId(6194).pipe(
-              tap((resp) => {
-                if (resp.result && resp.message) {
-                  this.toastr.success(resp.message);
-                  this.cartItems$ = this.cartService.getCartItems(
-                    this.userDetails.custId
-                  );
-                  this.cartQuantity$ = this.cartItems$.pipe(
-                    map((items) =>
-                      items.reduce((sum, item) => sum + item.quantity, 0)
-                    )
-                  );
-                }
-              }),
-              catchError((e) => {
-                this.toastr.error('Error occurred while clearing the cart.');
-                return throwError(() => e);
-              })
-            );
-          } else {
-            this.toastr.info('No products in Cart to clear!');
-            return of(null); // Emit null if there are no products to clear
-          }
-        })
-      )
-      .subscribe();
-  }
   getCartItems() {
+    this.globalServ.startLoading();
     if (this.cartQuantity$) {
       this.cartItems$ = this.cartService
         .getCartItems(this.userDetails.custId)
@@ -311,15 +267,18 @@ export class ProductListComponent implements OnInit, OnChanges {
           tap((resp) => {
             console.log('tap plist', resp);
             if (resp && resp.length > 0) {
-              // this.cartService.toggleCartVisibility(); // Show cart if items exist
             } else {
               this.toastr.info('No Products Available in cart');
             }
           }),
           catchError((e) => {
             return of([]);
+          }),
+          finalize(() => {
+            this.globalServ.stopLoading();
           })
         );
+      this.router.navigate(['catalogue', 'cart']);
       this.cartItems.emit(this.cartItems$);
     } else {
       this.toastr.info('No Products Available in cart');
@@ -329,5 +288,71 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.updateVisibleSubject.next(true);
     this.isUpdate.emit(this.updateVisibleSubject.getValue());
     this.router.navigate(['catalogue', 'edit-product', productId]);
+  }
+  clearCart() {
+    this.globalServ.startLoading();
+    let sucesscount: number = 0;
+    let failureCount: number = 0;
+    let failedCartIds: string[] = [];
+    this.cartItems$
+      .pipe(
+        take(1),
+        switchMap((items) => {
+          if (items.length > 0) {
+            const deleteRequests = items.map((item) =>
+              this.cartService.deleteCartProductByCartId(item.cartId).pipe(
+                tap((resp) => {
+                  if (resp.result && resp.message) {
+                    // this.toastr.success(resp.message);
+                    sucesscount += 1;
+                  }
+                }),
+                catchError((e) => {
+                  failureCount += 1;
+                  failedCartIds.push(item.productName || 'Unknown Item');
+                  // this.toastr.error('Error occurred while deleting item.');
+                  return throwError(() => e);
+                })
+              )
+            );
+
+            return forkJoin(deleteRequests).pipe(
+              tap(() => {
+                this.cartItems$ = this.cartService.getCartItems(
+                  this.userDetails.custId
+                );
+                this.cartQuantity$ = this.cartItems$.pipe(
+                  map((items) =>
+                    items.reduce((sum, item) => sum + item.quantity, 0)
+                  )
+                );
+              }),
+              catchError((e) => {
+                this.toastr.error('Error clearing the cart.');
+                return throwError(() => e);
+              })
+            );
+          } else {
+            this.toastr.info('No products in Cart to clear!');
+            return of(null);
+          }
+        }),
+        finalize(() => {
+          if (sucesscount > 0 && failureCount === 0) {
+            this.toastr.success('Cart Cleared');
+          }
+          if (sucesscount > 0 && failureCount > 0) {
+            this.toastr.success('Some items were cleared successfully.');
+            this.toastr.error(
+              `Failed to clear items: ${failedCartIds.join(', ')}`
+            );
+          } else if (failureCount > 0) {
+            this.toastr.error('Failed to clear the cart.');
+          }
+
+          this.globalServ.stopLoading();
+        })
+      )
+      .subscribe();
   }
 }

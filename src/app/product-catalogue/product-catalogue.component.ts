@@ -9,7 +9,7 @@ import { CartComponent } from './cart/cart.component';
 import { CartService } from '../service/cart.service';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet } from '@angular/router';
-
+import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.component';
 @Component({
   selector: 'app-product-catalogue',
   standalone: true,

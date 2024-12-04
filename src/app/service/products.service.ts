@@ -15,20 +15,13 @@ import {
   ProductCategory,
 } from '../interface/product';
 import { Api, headers } from './constant/constant';
+import { ToastrService } from 'ngx-toastr';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ProductsService {
-  toastr: any;
-
-  constructor(private http: HttpClient) {}
-
-  startLoading(isLoading: boolean) {
-    setTimeout(() => {
-      isLoading = false;
-    }, 100);
-  }
+  constructor(private http: HttpClient, private toastr: ToastrService) {}
 
   getProducts(): Observable<{ data: Product[] }> {
     return this.http

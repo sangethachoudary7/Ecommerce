@@ -28,6 +28,7 @@ import { ProductCategory, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { CartService } from '../../service/cart.service';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-updateproduct',
@@ -51,7 +52,7 @@ export class UpdateproductComponent {
     private toastr: ToastrService,
     private actRrouter: ActivatedRoute,
     private router: Router,
-    private cartService: CartService
+    private globalServ: GlobalService
   ) {
     this.productForm = this.fb.group({
       productName: ['', [Validators.required, Validators.minLength(3)]],
@@ -121,6 +122,7 @@ export class UpdateproductComponent {
     );
   }
   updateProduct(): void {
+    this.globalServ.startLoading();
     if (this.productForm.invalid) {
       this.toastr.warning('Please fill in all required fields correctly.');
       return;
@@ -139,7 +141,7 @@ export class UpdateproductComponent {
       productImageUrl: productData.productImageUrl,
     };
     console.log('product to send data', productToSend);
-    this.isSubmitting = true;
+
     this.proServ
       .updateProduct(productToSend)
       .pipe(
@@ -160,8 +162,7 @@ export class UpdateproductComponent {
           return throwError(() => e);
         }),
         finalize(() => {
-          this.isSubmitting = false;
-          this.proServ.startLoading(this.isSubmitting);
+          this.globalServ.stopLoading();
         })
       )
       .subscribe();
