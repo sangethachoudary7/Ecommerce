@@ -1,8 +1,8 @@
 <section class="h-100 gradient-custom">
   <div>
-    <!-- <button class="text-center backButton" (click)="updateProductList()">
+    <button class="text-center backButton" (click)="closeCart()">
       <span><i class="fa fa-arrow-left fa-3x"></i></span>
-    </button> -->
+    </button>
   </div>
   <div class="container py-5">
     <div class="row d-flex justify-content-center my-4">
@@ -45,7 +45,7 @@
                   class="btn btn-primary btn-sm me-1 mb-2"
                   data-mdb-tooltip-init
                   title="Remove item"
-                  (click)="removeItem(i.productId)"
+                  (click)="deleteItem(i.cartId)"
                 >
                   <i class="fas fa-trash"></i>
                 </button>
@@ -110,9 +110,9 @@
               </div>
             </div>
             <!-- Single item -->
-            <button class="text-center backButton" (click)="closeCart()">
+            <!-- <button class="text-center backButton" (click)="closeCart()">
               <span><i class="fa fa-arrow-left fa-3x"></i></span>
-            </button>
+            </button> -->
           </div>
         </div>
         <div class="card mb-4">

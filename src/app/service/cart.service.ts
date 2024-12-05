@@ -8,6 +8,7 @@ import {
   BehaviorSubject,
   map,
   of,
+  switchMap,
 } from 'rxjs';
 import { Api, headers } from './constant/constant';
 import { AddToCart, ApiResponse } from '../interface/product';
@@ -139,6 +140,34 @@ export class CartService {
       )
       .pipe(
         catchError((err) => {
+          return throwError(() => err);
+        })
+      );
+  }
+  deleteCartProductByCartId1(cartId: number): Observable<ApiResponse<string>> {
+    return this.http
+      .get<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.D_P_FROM_CART_BY_CART_ID}?id=${cartId}`
+      )
+      .pipe(
+        switchMap((response) => {
+          console.log('Delete Response:', response);
+          if (response.result) {
+            const updatedCartItems = this.cartItemsSubject.value.filter(
+              (item) => item.cartId !== cartId
+            );
+            this.cartItemsSubject.next(updatedCartItems);
+
+            const updatedCartQuantity = updatedCartItems.reduce(
+              (sum, item) => sum + item.quantity,
+              0
+            );
+            this.cartQuantitySubject.next(updatedCartQuantity);
+          }
+          return of(response);
+        }),
+        catchError((err) => {
+          console.error('Error Deleting Cart Product:', err);
           return throwError(() => err);
         })
       );
