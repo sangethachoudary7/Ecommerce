@@ -19,12 +19,14 @@ import { ToastrService } from 'ngx-toastr';
 export class CartService {
   private cartQuantitySubject = new BehaviorSubject<number>(0);
   cartQuantity$ = this.cartQuantitySubject.asObservable();
+  private cartItemsSubject = new BehaviorSubject<AddToCart[]>([]);
+  cartItems$ = this.cartItemsSubject.asObservable();
 
   private cartVisibleSubject = new BehaviorSubject<boolean>(false);
   cartVisible$ = this.cartVisibleSubject.asObservable();
 
-  private cartItemsSubject = new BehaviorSubject<AddToCart[]>([]);
-  cartItems$ = this.cartItemsSubject.asObservable();
+  private updateVisibleSubject = new BehaviorSubject<boolean>(false);
+  updateVisible$ = this.updateVisibleSubject.asObservable();
 
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
@@ -38,12 +40,28 @@ export class CartService {
   );
 
   toggleCartVisibility() {
-    const currenState = this.cartVisibleSubject.value;
-    this.cartVisibleSubject.next(!currenState);
-    // const currentQty = this.cartQuantitySubject.value;
-    // this.cartQuantitySubject.next(currentQty);
-    console.log('subValue', currenState);
+    const currentState = this.cartVisibleSubject.value;
+    this.cartVisibleSubject.next(!currentState);
   }
+  toggleUpdateVisibility() {
+    const currentState = this.updateVisibleSubject.value;
+    this.updateVisibleSubject.next(!currentState);
+  }
+  showCart() {
+    this.cartVisibleSubject.next(true);
+  }
+
+  hideCart() {
+    this.cartVisibleSubject.next(false);
+  }
+  showUpdate() {
+    this.updateVisibleSubject.next(true);
+  }
+
+  hideUpdate() {
+    this.updateVisibleSubject.next(false);
+  }
+
   public addToCart(cartData: AddToCart): Observable<ApiResponse<string>> {
     const headers = new HttpHeaders({
       'Content-Type': 'application/json',
@@ -57,13 +75,6 @@ export class CartService {
         }
       )
       .pipe(
-        tap((resp) => {
-          console.log('cart update', cartData);
-          console.log('Cart resp', resp);
-          // if (resp && resp.result) {
-          //   this.getCartItems(cartData.custId);
-          // }
-        }),
         catchError((e) => {
           this.toastr.error('API request failed:', e); // Log any error
           return throwError(() => e);
@@ -74,21 +85,6 @@ export class CartService {
   public resetCart() {
     this.cartQuantitySubject.next(0);
   }
-  // public removeItemByCustId(custId: number): Observable<ApiResponse<string>> {
-  //   return this.http
-  //     .delete<ApiResponse<string>>(
-  //       `${Api.API_URL} ${Api.METHODS.D_P_FROM_CART_BY_CUST_ID} / ${custId}`
-  //     )
-  //     .pipe(
-  //       tap((resp) => {
-  //         console.log('custid pd', resp);
-  //         this.cartQuantitySubject.next(resp.data?.length || 0);
-  //       }),
-  //       catchError((err) => {
-  //         return throwError(() => err);
-  //       })
-  //     );
-  // }
   public getCartItems(custId: number): Observable<AddToCart[]> {
     return this.http
       .get<ApiResponse<AddToCart[]>>(
@@ -142,10 +138,6 @@ export class CartService {
         `${Api.API_URL}${Api.METHODS.D_P_FROM_CART_BY_CART_ID}?id=${cartId}`
       )
       .pipe(
-        tap((resp) => {
-          console.log('r.messge', resp.message);
-          this.getCartItems(cartId).subscribe();
-        }),
         catchError((err) => {
           return throwError(() => err);
         })

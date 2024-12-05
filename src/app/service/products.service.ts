@@ -107,7 +107,6 @@ export class ProductsService {
       )
       .pipe(
         map((resp) => {
-          console.log('Resp', resp);
           return resp;
         }),
         tap((resp) => {

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { ChangeDetectorRef, Component, Input } from '@angular/core';
 import { ProductsService } from '../service/products.service';
 import { Observable } from 'rxjs';
 import { RouterOutlet } from '@angular/router';
@@ -15,8 +15,12 @@ import { GlobalService } from '../service/global.service';
 export class LoadingSpinnerComponent {
   public isLoading$!: Observable<boolean>;
 
-  constructor(private globalServ: GlobalService) {}
+  constructor(
+    private globalServ: GlobalService,
+    private cdRef: ChangeDetectorRef
+  ) {}
   ngOnInit() {
     this.isLoading$ = this.globalServ.loading$;
+    this.cdRef.detectChanges();
   }
 }

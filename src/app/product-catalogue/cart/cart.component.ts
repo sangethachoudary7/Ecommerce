@@ -1,8 +1,15 @@
-import { Component, inject, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  inject,
+  Input,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { CartService } from '../../service/cart.service';
 import { CommonModule } from '@angular/common';
-import { catchError, map, Observable, tap, throwError } from 'rxjs';
-import { AddToCart, Product } from '../../interface/product';
+import { catchError, Observable, tap, throwError } from 'rxjs';
+import { AddToCart } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
@@ -14,18 +21,17 @@ import { Router } from '@angular/router';
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
-export class CartComponent implements OnInit {
+export class CartComponent {
   @Input() cartItems!: Observable<AddToCart[]>;
   @Input() custId!: number;
+
   cartService = inject(CartService);
   proService = inject(ProductsService);
   toastr = inject(ToastrService);
   router = inject(Router);
-  ngOnInit() {
-    if (this.custId) {
-      this.cartService.getCartItems(this.custId).subscribe();
-    }
-  }
+
+  cartVisible$!: Observable<boolean>;
+
   incrementQuantity(product: AddToCart): any {
     // this.cartService.updateCartQuantity(productId, 1);
     product.quantity = product.quantity + 1;
@@ -52,14 +58,11 @@ export class CartComponent implements OnInit {
   removeItem(productId: number): void {
     this.cartService.removeCartItem(productId);
   }
-  get cartItems$() {
-    return this.cartService.cartItems$;
-  }
 
   get totalPrice$() {
     return this.cartService.totalPrice$;
   }
-  updateProductList() {
-    this.router.navigate(['/catalogue']);
+  closeCart() {
+    this.cartService.toggleCartVisibility();
   }
 }

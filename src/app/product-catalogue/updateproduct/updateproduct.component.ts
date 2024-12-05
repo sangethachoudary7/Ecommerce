@@ -27,7 +27,7 @@ import {
 import { ProductCategory, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { CartService } from '../../service/cart.service';
+
 import { GlobalService } from '../../service/global.service';
 
 @Component({
@@ -44,7 +44,6 @@ export class UpdateproductComponent {
   public category$!: Observable<ProductCategory[]>;
   public product$!: Observable<Product>;
   productId!: number;
-  private desRef = inject(DestroyRef);
 
   constructor(
     private fb: FormBuilder,
@@ -80,11 +79,9 @@ export class UpdateproductComponent {
       tap((product) => {
         if (product) {
           this.category$.pipe(take(1)).subscribe((categories) => {
-            console.log('Categories:', categories);
             const matchingCategory = categories.find(
               (c) => c.categoryId === product.categoryId
             );
-            console.log('Matching category:', matchingCategory);
             if (matchingCategory) {
               this.productForm.patchValue({
                 productName: product.productName,
@@ -99,7 +96,6 @@ export class UpdateproductComponent {
               });
             }
           });
-          console.log('form values', this.productForm.value.productCategory);
         } else {
           this.toastr.warning('Product not found!');
         }
@@ -149,7 +145,6 @@ export class UpdateproductComponent {
           return resp;
         }),
         tap((resp) => {
-          console.log('up responce', resp);
           if (resp.result) {
             this.toastr.success(resp.message ?? 'Operation successful');
             this.productForm.reset();

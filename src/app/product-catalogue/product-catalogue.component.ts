@@ -27,37 +27,56 @@ import { LoadingSpinnerComponent } from '../loading-spinner/loading-spinner.comp
 export class ProductCatalogueComponent {
   selectedCategoryId: number | null = null;
   cartItems$!: Observable<AddToCart[]>;
-  isCartVisible = false;
+  isCartVisible$!: Observable<boolean>;
   isUpdateVisible = false;
   uDetails!: User;
 
   constructor(private cartService: CartService) {
-    this.cartService.cartVisible$.subscribe((isvisible) => {
-      this.isCartVisible = isvisible;
-      console.log('pc', this.isCartVisible);
-    });
+    this.cartService.toggleCartVisibility();
+    // this.cartService.toggleUpdateVisibility();
   }
 
   onUpdateVisibilityChange(isVisible: boolean): void {
     this.isUpdateVisible = isVisible;
-    // if (isVisible) {
-    //   this.isCartVisible = false; // Hide cart
-    // }
-    console.log('uv', this.isUpdateVisible);
   }
-  OnCartVisibilityChange(isCVisible: boolean): void {
-    this.isCartVisible = isCVisible;
-    // this.cartService.toggleCartVisibility();
-    // console.log('cv', isCVisible);
-  }
+
   onCategorySelected(categoryId: number) {
     this.selectedCategoryId = categoryId;
   }
   cartItems(cartItems$: Observable<AddToCart[]>) {
     this.cartItems$ = cartItems$;
-    this.isCartVisible = true;
+    this.isCartVisible$ = this.cartService.cartVisible$;
   }
+
   userDetails(uDetails: User) {
     this.uDetails = uDetails;
   }
 }
+
+// // constructor(private cartService: CartService) {
+// //   this.cartService.cartVisible$.subscribe((isvisible) => {
+// //     this.isCartVisible = isvisible;
+// //     console.log('pc', this.isCartVisible);
+// //   });
+// //   this.cartService.toggleCartVisibility();
+// //   this.cartService.toggleUpdateVisibility();
+// // }
+
+// // onUpdateVisibilityChange(isVisible: boolean): void {
+// //   this.isUpdateVisible = isVisible;
+// // }
+// // OnCartVisibilityChange(isCVisible: boolean): void {
+// //   this.isCartVisible = isCVisible;
+// // }
+// // onCategorySelected(categoryId: number) {
+// //   this.selectedCategoryId = categoryId;
+// // }
+// // cartItems(cartItems$: Observable<AddToCart[]>) {
+// //   this.cartItems$ = cartItems$;
+// //   this.isCartVisible = true;
+// //  this.isCartVisible= this.cartService.cartVisible$;
+// // }
+// // userDetails(uDetails: User) {
+// //   this.uDetails = uDetails;
+// // }
+// // }

@@ -15,7 +15,6 @@ import {
   catchError,
   finalize,
   forkJoin,
-  isEmpty,
   map,
   Observable,
   of,
@@ -52,7 +51,7 @@ export class ProductListComponent implements OnInit, OnChanges {
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
   @Output() isUpdate = new EventEmitter<boolean>();
-  @Output() isCart = new EventEmitter<boolean>();
+  // @Output() isCart = new EventEmitter<boolean>();
   userDetails!: User;
 
   @ViewChild('cartWindow') cartWindow!: ElementRef;
@@ -92,7 +91,7 @@ export class ProductListComponent implements OnInit, OnChanges {
       this.userDetails = {} as User;
     }
   }
-  private loadProducts() {
+  private loadProducts(): Observable<Product[] | []> {
     this.globalServ.startLoading();
     if (this.selectedCategoryId !== null) {
       this.prodList$ = this.getProductsByCId(this.selectedCategoryId).pipe(
@@ -128,6 +127,7 @@ export class ProductListComponent implements OnInit, OnChanges {
         })
       );
     }
+    return this.prodList$;
   }
   ngOnChanges(changes: SimpleChanges) {
     if (
@@ -157,25 +157,7 @@ export class ProductListComponent implements OnInit, OnChanges {
       })
     );
   }
-  public getProductsByPId(id: number) {
-    this.globalServ.startLoading();
-    return this.proService
-      .getProductsById(id)
-      .pipe(
-        map((resp) => {
-          console.log('pid', resp.data);
-          return resp.data;
-        }),
-        catchError((e) => {
-          this.toastr.success('API Error', 'Contact Admin');
-          return of([]);
-        }),
-        finalize(() => {
-          this.globalServ.startLoading();
-        })
-      )
-      .subscribe();
-  }
+
   showProductDetails(product: Product) {
     this.globalServ.startLoading();
     const isProductExist = this.cartService.getCartItem(product.productId);
@@ -187,11 +169,12 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.globalServ.stopLoading();
   }
 
-  addToCart() {
+  addToCart(): Observable<AddToCart[]> {
     this.globalServ.startLoading();
     if (!this.selectedProduct || this.quantity <= 0) {
-      this.toastr.warning('No products in cart');
-      return null;
+      this.toastr.warning('Invalid product or quantity');
+      this.globalServ.stopLoading();
+      return of([]);
     }
     const existingCartItem = this.cartService.getCartItem(
       this.selectedProduct.productId
@@ -201,7 +184,7 @@ export class ProductListComponent implements OnInit, OnChanges {
     if (existingCartItem) {
       cartData = {
         ...existingCartItem,
-        quantity: this.quantity, // Increment the quantity
+        quantity: this.quantity,
       };
       console.log('Cd', cartData);
     } else {
@@ -213,36 +196,26 @@ export class ProductListComponent implements OnInit, OnChanges {
         addedDate: new Date().toDateString(),
       };
     }
-
-    return this.cartService
-      .addToCart(cartData)
-      .pipe(
-        tap((resp: ApiResponse<string>) => {
-          if (resp && resp.message) {
-            this.cartItems$ = this.cartService.getCartItems(
-              this.userDetails.custId
-            );
-            this.cartQuantity$ = this.cartItems$.pipe(
-              map((items) =>
-                items.reduce((sum, item) => sum + item.quantity, 0)
-              )
-            );
-            this.toastr.success(resp.message);
-            this.closeCart();
-            this.quantity = 0;
-          } else {
-            this.toastr.warning('Failed to add item to cart.');
-          }
-        }),
-        catchError((error) => {
-          this.toastr.error(error);
-          return [];
-        }),
-        finalize(() => {
-          this.globalServ.stopLoading();
-        })
-      )
-      .subscribe();
+    this.cartItems$ = this.cartService.addToCart(cartData).pipe(
+      switchMap(() => this.cartService.getCartItems(this.userDetails.custId)),
+      tap((items) => {
+        this.cartQuantity$ = of(
+          items.reduce((sum, item) => sum + item.quantity, 0)
+        );
+        this.toastr.success('Item added to cart successfully!');
+        this.closeCart();
+        this.quantity = 0;
+        return of(items);
+      }),
+      catchError((error) => {
+        this.toastr.error('Error occurred while adding item to cart.');
+        return throwError(() => error);
+      }),
+      finalize(() => {
+        this.globalServ.stopLoading();
+      })
+    );
+    return this.cartItems$;
   }
   closeCart() {
     this.isCartHidden = true;
@@ -278,8 +251,8 @@ export class ProductListComponent implements OnInit, OnChanges {
             this.globalServ.stopLoading();
           })
         );
-      this.router.navigate(['catalogue', 'cart']);
       this.cartItems.emit(this.cartItems$);
+      this.cartService.showCart();
     } else {
       this.toastr.info('No Products Available in cart');
     }
@@ -289,70 +262,80 @@ export class ProductListComponent implements OnInit, OnChanges {
     this.isUpdate.emit(this.updateVisibleSubject.getValue());
     this.router.navigate(['catalogue', 'edit-product', productId]);
   }
-  clearCart() {
+  clearCart(): Observable<AddToCart[]> {
     this.globalServ.startLoading();
-    let sucesscount: number = 0;
+    let successCount: number = 0;
     let failureCount: number = 0;
     let failedCartIds: string[] = [];
-    this.cartItems$
-      .pipe(
-        take(1),
-        switchMap((items) => {
-          if (items.length > 0) {
-            const deleteRequests = items.map((item) =>
-              this.cartService.deleteCartProductByCartId(item.cartId).pipe(
-                tap((resp) => {
-                  if (resp.result && resp.message) {
-                    // this.toastr.success(resp.message);
-                    sucesscount += 1;
-                  }
-                }),
-                catchError((e) => {
-                  failureCount += 1;
-                  failedCartIds.push(item.productName || 'Unknown Item');
-                  // this.toastr.error('Error occurred while deleting item.');
-                  return throwError(() => e);
-                })
-              )
-            );
 
-            return forkJoin(deleteRequests).pipe(
-              tap(() => {
-                this.cartItems$ = this.cartService.getCartItems(
-                  this.userDetails.custId
-                );
-                this.cartQuantity$ = this.cartItems$.pipe(
-                  map((items) =>
-                    items.reduce((sum, item) => sum + item.quantity, 0)
-                  )
-                );
-              }),
-              catchError((e) => {
-                this.toastr.error('Error clearing the cart.');
-                return throwError(() => e);
-              })
-            );
-          } else {
-            this.toastr.info('No products in Cart to clear!');
-            return of(null);
-          }
-        }),
-        finalize(() => {
-          if (sucesscount > 0 && failureCount === 0) {
-            this.toastr.success('Cart Cleared');
-          }
-          if (sucesscount > 0 && failureCount > 0) {
-            this.toastr.success('Some items were cleared successfully.');
-            this.toastr.error(
-              `Failed to clear items: ${failedCartIds.join(', ')}`
-            );
-          } else if (failureCount > 0) {
-            this.toastr.error('Failed to clear the cart.');
-          }
+    this.cartItems$ = this.cartService.cartItems$.pipe(
+      take(1),
+      switchMap((items) => {
+        if (items.length === 0) {
+          this.toastr.info('No products in Cart to clear!');
+          return of([]);
+        }
+        const deleteRequests = items.map((item) =>
+          this.cartService.deleteCartProductByCartId(item.cartId).pipe(
+            tap((resp) => {
+              if (resp.result && resp.message) {
+                successCount += 1;
+              }
+            }),
+            catchError((e) => {
+              failureCount += 1;
+              failedCartIds.push(item.productName || 'Unknown Item');
+              return throwError(() => e);
+            })
+          )
+        );
+        return forkJoin(deleteRequests); // Execute all delete requests concurrently
+      }),
+      switchMap(() => {
+        this.cartItems$ = this.cartService.getCartItems(
+          this.userDetails.custId
+        );
+        this.cartQuantity$ = this.cartItems$.pipe(
+          map((items) => items.reduce((sum, item) => sum + item.quantity, 0))
+        );
+        return this.cartItems$; // Return the refreshed cart items
+      }),
+      finalize(() => {
+        if (successCount > 0 && failureCount === 0) {
+          this.toastr.success('Cart Cleared');
+        }
+        if (successCount > 0 && failureCount > 0) {
+          this.toastr.success('Some items were cleared successfully.');
+          this.toastr.error(
+            `Failed to clear items: ${failedCartIds.join(', ')}`
+          );
+        } else if (failureCount > 0) {
+          this.toastr.error('Failed to clear the cart.');
+        }
 
-          this.globalServ.stopLoading();
-        })
-      )
-      .subscribe();
+        this.globalServ.stopLoading();
+      })
+    );
+    return this.cartItems$;
   }
+
+  // public getProductsByPId(id: number) {
+  //   this.globalServ.startLoading();
+  //   return this.proService
+  //     .getProductsById(id)
+  //     .pipe(
+  //       map((resp) => {
+  //         console.log('pid', resp.data);
+  //         return resp.data;
+  //       }),
+  //       catchError((e) => {
+  //         this.toastr.success('API Error', 'Contact Admin');
+  //         return of([]);
+  //       }),
+  //       finalize(() => {
+  //         this.globalServ.startLoading();
+  //       })
+  //     )
+  //     .subscribe();
+  // }
 }
