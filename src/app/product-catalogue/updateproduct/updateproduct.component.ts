@@ -72,7 +72,7 @@ export class UpdateproductComponent {
     console.log('second Pid', this.productId);
 
     this.fetchCategories();
-    this.product$ = this.proServ.getProductsById(this.productId).pipe(
+    this.product$ = this.proServ.getProductsByProId(this.productId).pipe(
       map((resp) => {
         return resp.data;
       }),

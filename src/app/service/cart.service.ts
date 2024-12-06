@@ -40,6 +40,18 @@ export class CartService {
     )
   );
 
+  ShippingPrice$ = this.totalPrice$.pipe(
+    map((price) => {
+      if (price < 999) {
+        return 100;
+      } else if (price >= 1000 && price < 1999) {
+        return 50;
+      } else {
+        return 0;
+      }
+    })
+  );
+
   toggleCartVisibility() {
     const currentState = this.cartVisibleSubject.value;
     this.cartVisibleSubject.next(!currentState);

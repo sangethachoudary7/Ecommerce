@@ -1,19 +1,7 @@
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import {
-  BehaviorSubject,
-  catchError,
-  map,
-  Observable,
-  tap,
-  throwError,
-} from 'rxjs';
-import {
-  AddToCart,
-  ApiResponse,
-  Product,
-  ProductCategory,
-} from '../interface/product';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
+import { ApiResponse, Product, ProductCategory } from '../interface/product';
 import { Api, headers } from './constant/constant';
 import { ToastrService } from 'ngx-toastr';
 
@@ -35,11 +23,10 @@ export class ProductsService {
         })
       );
   }
-  getProductsById(productId: number): Observable<{ data: Product }> {
-    console.log('Pid', productId);
+  getProductsByProId(productId: number): Observable<{ data: Product }> {
     return this.http
       .get<{ data: Product }>(
-        `${Api.API_URL}${Api.METHODS.GET_PRODUCT_BY_ID}?id=${productId}`
+        `${Api.API_URL}${Api.METHODS.GET_PRODUCT_BY_P_ID}?id=${productId}`
       )
       .pipe(
         map((resp) => {

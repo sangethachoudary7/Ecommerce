@@ -13,12 +13,12 @@ export const Api = {
     ADD_TO_CART: 'AddToCart',
     GET_ALL_PRODUCT_BY_CUST_ID: 'GetCartProductsByCustomerId',
     D_P_FROM_CART_BY_CART_ID: 'DeleteProductFromCartById',
+    GET_PRODUCT_BY_P_ID: 'GetProductById',
     // D_P_FROM_CART_BY_CUST_ID: 'GetCartProductsByCustomerId',
     ALL_CART_ITEAM: 'GetAllCartItems',
     C_PRODOCT: 'CreateProduct',
     U_PRODOCT: 'UpdateProduct',
     D_PRODUCT: 'DeleteProductById',
-    GET_PRODUCT_BY_ID: 'GetProductById',
 
     PLACE_ORDER: 'PlaceOrder',
     CANCLE_ORDER: 'cancelOrder',

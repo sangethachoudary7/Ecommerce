@@ -10,6 +10,7 @@ import { CartService } from '../../service/cart.service';
 import { CommonModule } from '@angular/common';
 import {
   catchError,
+  combineLatest,
   finalize,
   map,
   Observable,
@@ -17,10 +18,11 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import { AddToCart, ApiResponse } from '../../interface/product';
+import { AddToCart, ApiResponse, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ToastrService } from 'ngx-toastr';
 import { Router } from '@angular/router';
+import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-cart',
@@ -33,47 +35,84 @@ export class CartComponent implements OnInit {
   @Input() cartItems!: Observable<AddToCart[]>;
   @Input() custId!: number;
 
+  public prodList$!: Observable<{ data: Product }>;
+
   cartService = inject(CartService);
   proService = inject(ProductsService);
   toastr = inject(ToastrService);
   router = inject(Router);
+  globalServ = inject(GlobalService);
 
   cartVisible$!: Observable<boolean>;
+
+  currentDate: string;
+  expectedDeliveryDate: string;
+
+  constructor() {
+    this.currentDate = this.formatDate(new Date()); // Get current date and format it
+    this.expectedDeliveryDate = this.calculateExpectedDeliveryDate(); // Calculate expected delivery date
+  }
+
   ngOnInit(): void {
-    // this.cartItems = this.cartService.cartItems$;
     if (!this.cartItems) {
       this.cartItems = this.cartService.cartItems$;
     }
   }
-  incrementQuantity(product: AddToCart): any {
-    // this.cartService.updateCartQuantity(productId, 1);
-    product.quantity = product.quantity + 1;
-    this.cartService
-      .addToCart(product)
-      .pipe(
-        tap((resp) => {
-          if (resp.message) {
-            this.toastr.success(resp.message);
+  updateQuantity(
+    product: AddToCart,
+    change: number
+  ): Observable<ApiResponse<string>> {
+    const originalQuantity = product.quantity;
+    product.quantity += change;
+    this.globalServ.startLoading();
+    return this.cartService.addToCart(product).pipe(
+      tap((resp) => {
+        if (resp.message) {
+          if (resp.result === false && resp.message) {
+            this.toastr.warning(
+              `Backend responded with success, but quantity wasn't updated in db because i am using open API its having update issue. (Expected: ${product.quantity}, Actual: ${originalQuantity})`
+            );
+            product.quantity = originalQuantity;
+          } else {
+            this.toastr.success('Product quantity updated successfully.');
           }
-        }),
-        catchError((e) => {
-          this.toastr.error(e);
-          return throwError(() => e);
-        })
-      )
-      .subscribe();
+        } else {
+          this.toastr.error('Failed to update product quantity.');
+        }
+      }),
+      catchError((e) => {
+        this.toastr.error(e);
+        return throwError(() => e);
+      }),
+      finalize(() => {
+        this.globalServ.stopLoading();
+      })
+    );
+  }
+
+  incrementQuantity(product: AddToCart) {
+    return this.updateQuantity(product, 1).subscribe();
   }
 
   decrementQuantity(product: AddToCart) {
-    product.quantity = product.quantity - 1;
+    return this.updateQuantity(product, -1).subscribe();
   }
 
   removeItem(productId: number): void {
     this.cartService.removeCartItem(productId);
   }
 
-  get totalPrice$() {
+  get totalProductPrice$() {
     return this.cartService.totalPrice$;
+  }
+
+  get shippingPrice$() {
+    return this.cartService.ShippingPrice$;
+  }
+  get TotalAmount$() {
+    return combineLatest([this.totalProductPrice$, this.shippingPrice$]).pipe(
+      map(([productPrice, shippingPrice]) => productPrice + shippingPrice)
+    );
   }
   closeCart() {
     this.cartService.toggleCartVisibility();
@@ -96,5 +135,20 @@ export class CartComponent implements OnInit {
         })
       )
       .subscribe();
+  }
+  calculateExpectedDeliveryDate(): string {
+    const currentDate = new Date(); // Get current date
+    currentDate.setDate(currentDate.getDate() + 5); // Add 5 days to the current date
+
+    return this.formatDate(currentDate); // Return formatted date
+  }
+
+  // Function to format date in "DD.MM.YYYY" format
+  formatDate(date: Date): string {
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so we add 1
+    const year = date.getFullYear();
+
+    return `${day}.${month}.${year}`; // Return formatted date (e.g., "12.10.2020")
   }
 }
