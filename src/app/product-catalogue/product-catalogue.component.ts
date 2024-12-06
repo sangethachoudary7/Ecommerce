@@ -4,7 +4,7 @@ import { ProductListComponent } from './product-list/product-list.component';
 import { ToastrWrapperModule } from '../module/toastr-wrapper-module';
 import { Login, User } from '../interface/login';
 import { AddToCart } from '../interface/product';
-import { Observable, Subscription } from 'rxjs';
+import { combineLatest, map, Observable, Subscription } from 'rxjs';
 import { CartComponent } from './cart/cart.component';
 import { CartService } from '../service/cart.service';
 import { CommonModule } from '@angular/common';
@@ -28,17 +28,27 @@ export class ProductCatalogueComponent {
   selectedCategoryId: number | null = null;
   cartItems$!: Observable<AddToCart[]>;
   isCartVisible$!: Observable<boolean>;
-  isUpdateVisible = false;
+  // isUpdateVisible = false;
+  isUpdateVisible$!: Observable<boolean>;
+  isAnyOverlayVisible$!: Observable<boolean>;
   uDetails!: User;
 
   constructor(private cartService: CartService) {
-    this.cartService.toggleCartVisibility();
+    // this.cartService.toggleCartVisibility();
     // this.cartService.toggleUpdateVisibility();
+    this.isCartVisible$ = this.cartService.cartVisible$;
+    this.isUpdateVisible$ = this.cartService.updateVisible$;
+    this.isAnyOverlayVisible$ = combineLatest([
+      this.isCartVisible$,
+      this.isUpdateVisible$,
+    ]).pipe(
+      map(([cartVisible, updateVisible]) => cartVisible || updateVisible)
+    );
   }
 
-  onUpdateVisibilityChange(isVisible: boolean): void {
-    this.isUpdateVisible = isVisible;
-  }
+  // onUpdateVisibilityChange(isVisible: boolean): void {
+  //   this.isUpdateVisible = isVisible;
+  // }
 
   onCategorySelected(categoryId: number) {
     this.selectedCategoryId = categoryId;

@@ -5,6 +5,7 @@ import {
   EventEmitter,
   inject,
   input,
+  OnDestroy,
   Output,
 } from '@angular/core';
 import {
@@ -29,6 +30,7 @@ import { ProductsService } from '../../service/products.service';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 
 import { GlobalService } from '../../service/global.service';
+import { CartService } from '../../service/cart.service';
 
 @Component({
   selector: 'app-updateproduct',
@@ -37,7 +39,7 @@ import { GlobalService } from '../../service/global.service';
   templateUrl: './updateproduct.component.html',
   styleUrl: './updateproduct.component.css',
 })
-export class UpdateproductComponent {
+export class UpdateproductComponent implements OnDestroy {
   productForm: FormGroup;
   categories: ProductCategory[] = [];
   isSubmitting: boolean = false;
@@ -48,6 +50,7 @@ export class UpdateproductComponent {
   constructor(
     private fb: FormBuilder,
     private proServ: ProductsService,
+    private cartService: CartService,
     private toastr: ToastrService,
     private actRrouter: ActivatedRoute,
     private router: Router,
@@ -105,6 +108,9 @@ export class UpdateproductComponent {
         return throwError(() => e);
       })
     );
+  }
+  ngOnDestroy() {
+    this.cartService.hideUpdate(); // Reset visibility when leaving the update component
   }
   fetchCategories() {
     this.category$ = this.proServ.getCategory().pipe(

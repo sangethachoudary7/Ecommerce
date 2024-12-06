@@ -50,7 +50,7 @@ export class ProductListComponent implements OnInit, OnChanges {
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
-  @Output() isUpdate = new EventEmitter<boolean>();
+  // @Output() isUpdate = new EventEmitter<boolean>();
   // @Output() isCart = new EventEmitter<boolean>();
   userDetails!: User;
 
@@ -258,9 +258,11 @@ export class ProductListComponent implements OnInit, OnChanges {
     }
   }
   updateProduct(productId: number): void {
-    this.updateVisibleSubject.next(true);
-    this.isUpdate.emit(this.updateVisibleSubject.getValue());
+    // this.updateVisibleSubject.next(true);
+    // this.isUpdate.emit(this.updateVisibleSubject.getValue());
+
     this.router.navigate(['catalogue', 'edit-product', productId]);
+    this.cartService.showUpdate();
   }
   clearCart(): Observable<AddToCart[]> {
     this.globalServ.startLoading();
