@@ -12,9 +12,13 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
-  background: url("https://i.postimg.cc/rmWWDgCp/background.jpg") no-repeat;
+  min-width: 100vw;
+  background: url("https://i.postimg.cc/rmWWDgCp/background.jpg") no-repeat
+    center center;
   background-size: cover;
   background-position: center;
+  margin: 0; /* Reset any default margins */
+  padding: 0;
 }
 
 .wrapper {

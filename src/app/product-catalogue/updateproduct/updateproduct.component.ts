@@ -27,7 +27,7 @@ import {
 } from 'rxjs';
 import { ProductCategory, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
-import { ActivatedRoute, ParamMap, Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 import { GlobalService } from '../../service/global.service';
 import { CartService } from '../../service/cart.service';
@@ -110,7 +110,7 @@ export class UpdateproductComponent implements OnDestroy {
     );
   }
   ngOnDestroy() {
-    this.cartService.hideUpdate(); // Reset visibility when leaving the update component
+    this.cartService.hideUpdate();
   }
   fetchCategories() {
     this.category$ = this.proServ.getCategory().pipe(

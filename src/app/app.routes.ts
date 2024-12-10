@@ -9,13 +9,46 @@ import { CreateProductComponent } from './create-product/create-product.componen
 import { UpdateproductComponent } from './product-catalogue/updateproduct/updateproduct.component';
 import { NgModule } from '@angular/core';
 import { CartComponent } from './product-catalogue/cart/cart.component';
+import { CreateCatagoryComponent } from './create-catagory/create-catagory.component';
+
+import { AboutComponent } from './welcome-page/about/about.component';
+import { ContactComponent } from './welcome-page/contact/contact.component';
+
+import { WelcomePageComponent } from './welcome-page/welcome-page.component';
+import { HomePageComponent } from './welcome-page/home-page/home-page.component';
+import { NotfoundComponent } from './notfound/notfound.component';
+import { ServicepageComponent } from './welcome-page/servicepage/servicepage.component';
 
 export const routes: Routes = [
   {
-    path: '',
-    redirectTo: 'register',
-    pathMatch: 'full',
+    path: 'welcome',
+    component: WelcomePageComponent,
+    children: [
+      {
+        path: 'home',
+        component: HomePageComponent,
+      },
+      {
+        path: 'about',
+        component: AboutComponent,
+      },
+      {
+        path: 'service',
+        component: ServicepageComponent,
+      },
+
+      {
+        path: 'contact',
+        component: ContactComponent,
+      },
+      {
+        path: '',
+        redirectTo: 'home',
+        pathMatch: 'full',
+      },
+    ],
   },
+  { path: '', redirectTo: 'welcome', pathMatch: 'full' },
   {
     path: 'login',
     component: AuthenticationComponent,
@@ -27,6 +60,10 @@ export const routes: Routes = [
   {
     path: 'createproduct',
     component: CreateProductComponent,
+  },
+  {
+    path: 'createCategory',
+    component: CreateCatagoryComponent,
   },
   {
     path: 'catalogue',
@@ -57,6 +94,10 @@ export const routes: Routes = [
         component: CartComponent,
       },
     ],
+  },
+  {
+    path: '**',
+    component: NotfoundComponent, // Wildcard route for 404
   },
 ];
 @NgModule({

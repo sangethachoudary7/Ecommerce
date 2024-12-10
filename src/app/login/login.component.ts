@@ -134,4 +134,7 @@ export class AuthenticationComponent implements OnInit {
       console.log('Form is invalid!');
     }
   }
+  goToRegister() {
+    this.router.navigateByUrl('/register');
+  }
 }

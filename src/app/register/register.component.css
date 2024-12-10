@@ -12,6 +12,7 @@
   justify-content: center;
   align-items: center;
   min-height: 100vh;
+  min-width: 100vw;
   background: url("https://mariongrandvincent.github.io/HTML-Personal-website/img-codePen/bg.jpg")
     no-repeat;
   background-size: cover;

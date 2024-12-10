@@ -197,8 +197,11 @@ export class ProductListComponent implements OnInit, OnChanges {
       };
     }
     this.cartItems$ = this.cartService.addToCart(cartData).pipe(
-      switchMap(() => this.cartService.getCartItems(this.userDetails.custId)),
+      switchMap((responses) =>
+        this.cartService.getCartItems(this.userDetails.custId)
+      ),
       tap((items) => {
+        console.log('item', items);
         this.cartQuantity$ = of(
           items.reduce((sum, item) => sum + item.quantity, 0)
         );
@@ -251,16 +254,15 @@ export class ProductListComponent implements OnInit, OnChanges {
             this.globalServ.stopLoading();
           })
         );
+
       this.cartItems.emit(this.cartItems$);
+
       this.cartService.showCart();
     } else {
       this.toastr.info('No Products Available in cart');
     }
   }
   updateProduct(productId: number): void {
-    // this.updateVisibleSubject.next(true);
-    // this.isUpdate.emit(this.updateVisibleSubject.getValue());
-
     this.router.navigate(['catalogue', 'edit-product', productId]);
     this.cartService.showUpdate();
   }

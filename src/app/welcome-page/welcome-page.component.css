@@ -5,15 +5,16 @@
   box-sizing: border-box;
 }
 .main {
-  height: 100vh;
   background: linear-gradient(to right, #ff1a66, #ff6699);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 header {
   padding: 50px;
   font-size: 30px;
   color: #fff;
   height: 10vh;
-  background-color: aquamarine;
 }
 header span {
   margin-left: 10px;
@@ -31,11 +32,11 @@ header ul li {
 header ul li a {
   text-decoration: none;
   color: #fff;
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 /* header ul li:nth-child(1) {
-        background-color: #222;
-      } */
+      background-color: #222;
+    } */
 header ul li:hover {
   background-color: #222;
 }

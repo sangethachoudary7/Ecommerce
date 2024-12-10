@@ -18,7 +18,7 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class CartService {
-  private cartQuantitySubject = new BehaviorSubject<number>(0);
+  public cartQuantitySubject = new BehaviorSubject<number>(0);
   cartQuantity$ = this.cartQuantitySubject.asObservable();
   private cartItemsSubject = new BehaviorSubject<AddToCart[]>([]);
   cartItems$ = this.cartItemsSubject.asObservable();

@@ -1,0 +1,75 @@
+<div class="about-container">
+  <div class="about-header">
+    <h1>About Us</h1>
+    <p>Your One-Stop Shop for Everyday Essentials and Beyond</p>
+  </div>
+  <section>
+    <div class="slider-container">
+      <div class="slider">
+        <div class="slide" *ngFor="let slide of slides">
+          <img [src]="getImagePath(slide.name)" [alt]="slide.alt" />
+        </div>
+      </div>
+    </div>
+  </section>
+  <div class="about-content">
+    <section>
+      <h2>Welcome to Sangeetha Online Shopping</h2>
+      <p>
+        At Sangeetha Online Shopping, we bring you a wide range of products—
+        from fresh fruits and vegetables to electronics, groceries, and daily
+        provisions—all at your fingertips. Whether you’re stocking up on
+        household essentials or hunting for the latest gadgets, we’ve got you
+        covered.
+      </p>
+    </section>
+    <section>
+      <h2>Our Mission</h2>
+      <p>
+        Our mission is to make shopping effortless and accessible for everyone.
+        We’re committed to offering high-quality products, competitive prices,
+        and a seamless shopping experience.
+      </p>
+    </section>
+    <section>
+      <h2>What We Offer</h2>
+      <ul>
+        <li>
+          <strong>Fresh Produce:</strong> Handpicked fruits and vegetables,
+          sourced directly from local farms.
+        </li>
+        <li>
+          <strong>Provisions:</strong> Groceries, spices, and pantry staples for
+          your daily needs.
+        </li>
+        <li>
+          <strong>Electronics:</strong> Latest gadgets, appliances, and
+          accessories for your home and lifestyle.
+        </li>
+        <li>
+          <strong>Household Essentials:</strong> Cleaning supplies, personal
+          care, and more.
+        </li>
+      </ul>
+    </section>
+    <section>
+      <h2>Why Choose Us?</h2>
+      <p>We stand out because of:</p>
+      <ul>
+        <li>Freshness Guaranteed: High-quality, farm-fresh produce.</li>
+        <li>Wide Variety: A diverse range of products under one roof.</li>
+        <li>Affordable Pricing: Budget-friendly options for everyone.</li>
+        <li>Convenient Shopping: Easy online ordering and delivery.</li>
+      </ul>
+    </section>
+    <section>
+      <h2>Join Our Community</h2>
+      <p>
+        Follow us on social media for updates, exclusive deals, and more:
+        <a href="https://www.instagram.com" target="_blank">Instagram</a>,
+        <a href="https://www.facebook.com" target="_blank">Facebook</a>,
+        <a href="https://www.twitter.com" target="_blank">Twitter</a>.
+      </p>
+    </section>
+  </div>
+</div>

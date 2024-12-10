@@ -1,0 +1,36 @@
+<div class="main">
+  <header>
+    <i class="fa-solid fa-bag-shopping"></i>
+    <span>Ecommerce</span>
+    <ul>
+      <li>
+        <!-- <a routerLink="home" routerLinkActive="active-link">Home</a> -->
+        <a (click)="navigateTo('home')" routerLinkActive="active-link">Home</a>
+      </li>
+      <li>
+        <!-- <a routerLink="service" routerLinkActive="active-link">Services</a> -->
+        <a (click)="navigateTo('service')" routerLinkActive="active-link"
+          >Services</a
+        >
+      </li>
+      <li>
+        <!-- <a routerLink="about" routerLinkActive="active-link">About</a> -->
+        <a (click)="navigateTo('about')" routerLinkActive="active-link"
+          >About</a
+        >
+      </li>
+      <li>
+        <a (click)="navigateTo('contact')" routerLinkActive="active-link"
+          >Contact</a
+        >
+      </li>
+      <li>
+        <!-- <a routerLink="/login" routerLinkActive="active-link">Login</a> -->
+        <a (click)="navigateToLogin()" routerLinkActive="active-link">Login</a>
+      </li>
+    </ul>
+  </header>
+  <main>
+    <router-outlet></router-outlet>
+  </main>
+</div>

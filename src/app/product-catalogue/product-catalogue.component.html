@@ -13,41 +13,15 @@
       (uDetails)="userDetails($event)"
     ></app-product-list>
   </div>
-  <app-cart
-    [custId]="uDetails.custId"
-    [cartItems]="cartItems$"
-    *ngIf="isCartVisible$ | async"
-  ></app-cart>
+  <div>
+    <app-cart
+      [custId]="uDetails.custId"
+      [cartItems]="cartItems$"
+      *ngIf="isCartVisible$ | async"
+    ></app-cart>
+  </div>
+
   <div *ngIf="isUpdateVisible$ | async">
     <router-outlet></router-outlet>
   </div>
 </div>
-
-<!-- (isUpdate)="onUpdateVisibilityChange($event)" -->
-<!-- <div class="product-catalogue">
-  <div class="category" *ngIf="!isCartVisible && !isUpdateVisible">
-    <app-product-category
-      (sCategoryId)="onCategorySelected($event)"
-    ></app-product-category>
-  </div>
-  <div class="product-list">
-    <app-product-list
-      *ngIf="!isCartVisible && !isUpdateVisible"
-      [selectedCategoryId]="selectedCategoryId"
-      (cartItems)="cartItems($event)"
-      (uDetails)="userDetails($event)"
-      (isUpdate)="onUpdateVisibilityChange($event)"
-    ></app-product-list>
-  </div>
-  <app-cart
-    [custId]="uDetails.custId"
-    [cartItems]="cartItems$"
-    *ngIf="isCartVisible"
-  ></app-cart>
-  <div *ngIf="isUpdateVisible">
-    <router-outlet></router-outlet>
-  </div>
-</div> -->
-
-<!-- cartVisible$ -->
-<!-- *ngIf="!isCartVisible && !isUpdateVisible" -->
