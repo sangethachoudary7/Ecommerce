@@ -12,6 +12,7 @@ import { ProductsService } from '../service/products.service';
 import { catchError, finalize, map, Observable, tap, throwError } from 'rxjs';
 import { CommonModule } from '@angular/common';
 import { GlobalService } from '../service/global.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-create-product',
@@ -29,7 +30,8 @@ export class CreateProductComponent {
     private fb: FormBuilder,
     private proServ: ProductsService,
     private toastr: ToastrService,
-    private globalServ: GlobalService
+    private globalServ: GlobalService,
+    private router: Router
   ) {
     this.productForm = this.fb.group({
       productName: ['', [Validators.required, Validators.minLength(3)]],
@@ -82,6 +84,7 @@ export class CreateProductComponent {
           if (resp.result) {
             this.toastr.success(resp.message ?? 'Operation successful');
             this.productForm.reset();
+            this.router.navigateByUrl('/product-management');
           } else {
             this.toastr.warning(resp.message ?? 'Something went wrong');
           }
@@ -94,15 +97,3 @@ export class CreateProductComponent {
       .subscribe();
   }
 }
-
-// catchError((e) => {
-//   // this.toastr.error('An error occurred while saving the product.');
-//   return throwError(() => e);
-// }),
-// switchMap((resp) => {
-//   if (resp && resp.message) {
-//     this.toastr.success(resp.message);
-//     this.productForm.reset();
-//   }
-//   return of(resp); // Return a new observable here if needed
-// }),

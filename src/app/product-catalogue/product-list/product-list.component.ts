@@ -50,8 +50,6 @@ export class ProductListComponent implements OnInit, OnChanges {
   @Input() selectedCategoryId: number | null = null;
   @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
   @Output() uDetails = new EventEmitter<User>();
-  // @Output() isUpdate = new EventEmitter<boolean>();
-  // @Output() isCart = new EventEmitter<boolean>();
   userDetails!: User;
 
   @ViewChild('cartWindow') cartWindow!: ElementRef;

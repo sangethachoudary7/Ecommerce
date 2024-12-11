@@ -178,6 +178,7 @@ export class UpdateproductComponent implements OnDestroy {
       : false;
   }
   updateProductList() {
-    this.router.navigate(['/catalogue']);
+    // this.router.navigate(['/catalogue']);
+    this.router.navigate(['/product-management']);
   }
 }

@@ -104,4 +104,22 @@ export class ProductsService {
         })
       );
   }
+
+  public deleteProductByPid(pId: number): Observable<ApiResponse<string>> {
+    return this.http
+      .get<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.D_PRODUCT_BY_P_ID}?id=${pId}`
+      )
+      .pipe(
+        map((resp: ApiResponse<string>) => {
+          if (resp.message === null) {
+            throw new Error('No message returned from API');
+          }
+          return resp;
+        }),
+        catchError((e) => {
+          return throwError(() => e);
+        })
+      );
+  }
 }

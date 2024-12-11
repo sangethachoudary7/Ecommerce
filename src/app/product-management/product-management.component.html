@@ -1,0 +1,65 @@
+<div class="container-wrapper">
+  <div>
+    <h1 class="heading">Produt's List</h1>
+  </div>
+
+  <div *ngIf="prodList$ | async as products">
+    <table class="responsive-table">
+      <thead>
+        <tr>
+          <th>S.no</th>
+          <th>Product Name</th>
+
+          <th>ProductSku</th>
+          <th>Category</th>
+
+          <th>Price</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let product of products; let i = index">
+          <td>
+            {{ i + 1 }}
+          </td>
+          <td>
+            {{ product.productName }}
+          </td>
+
+          <td>
+            {{ product.productSku }}
+          </td>
+          <td>
+            {{ product.categoryName }}
+          </td>
+
+          <td>
+            {{ product.productPrice }}
+          </td>
+
+          <td>
+            <button
+              class="btn btn btn-success btn-option me-2"
+              (click)="addProduct()"
+            >
+              add
+            </button>
+            <button
+              class="btn btn-primary btn-option me-2"
+              (click)="editProduct(product)"
+            >
+              edit
+            </button>
+            <button
+              class="btn btn-danger btn-option"
+              (click)="deleteProduct(product.productId)"
+            >
+              delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

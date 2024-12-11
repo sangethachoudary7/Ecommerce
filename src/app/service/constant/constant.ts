@@ -18,7 +18,7 @@ export const Api = {
     ALL_CART_ITEAM: 'GetAllCartItems',
     C_PRODOCT: 'CreateProduct',
     U_PRODOCT: 'UpdateProduct',
-    D_PRODUCT: 'DeleteProductById',
+    D_PRODUCT_BY_P_ID: 'DeleteProductById',
 
     PLACE_ORDER: 'PlaceOrder',
     CANCLE_ORDER: 'cancelOrder',

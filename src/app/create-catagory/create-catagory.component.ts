@@ -14,8 +14,6 @@ export class CreateCatagoryComponent {
   parentCategoryName = '';
   subCategoryName = '';
   selectedParentCategory: string | null = null;
-
-  // Mock list of parent categories
   parentCategories = [
     { id: '1', name: 'Electronics' },
     { id: '2', name: 'Fashion' },
@@ -31,7 +29,6 @@ export class CreateCatagoryComponent {
       alert('Please enter a category name');
       return;
     }
-    // Save the parent category (mock implementation)
     console.log('Added Parent Category:', this.parentCategoryName);
     this.parentCategoryName = '';
     alert('Parent Category added successfully!');
@@ -46,7 +43,6 @@ export class CreateCatagoryComponent {
       alert('Please enter a subcategory name');
       return;
     }
-    // Save the subcategory (mock implementation)
     console.log('Added Subcategory:', {
       parentCategory: this.selectedParentCategory,
       name: this.subCategoryName,

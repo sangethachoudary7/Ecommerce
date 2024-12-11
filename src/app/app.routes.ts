@@ -18,6 +18,7 @@ import { WelcomePageComponent } from './welcome-page/welcome-page.component';
 import { HomePageComponent } from './welcome-page/home-page/home-page.component';
 import { NotfoundComponent } from './notfound/notfound.component';
 import { ServicepageComponent } from './welcome-page/servicepage/servicepage.component';
+import { ProductManagementComponent } from './product-management/product-management.component';
 
 export const routes: Routes = [
   {
@@ -48,7 +49,7 @@ export const routes: Routes = [
       },
     ],
   },
-  { path: '', redirectTo: 'welcome', pathMatch: 'full' },
+  { path: '', redirectTo: 'product-management', pathMatch: 'full' },
   {
     path: 'login',
     component: AuthenticationComponent,
@@ -64,6 +65,10 @@ export const routes: Routes = [
   {
     path: 'createCategory',
     component: CreateCatagoryComponent,
+  },
+  {
+    path: 'product-management',
+    component: ProductManagementComponent,
   },
   {
     path: 'catalogue',
