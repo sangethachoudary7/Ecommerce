@@ -19,9 +19,8 @@ export interface ProductCategory {
   categoryId: number;
   categoryName: string;
   parentCategoryId: number;
-  userId: number;
+  userId?: number;
 }
-
 export interface AddToCart {
   cartId: number;
   custId: number;

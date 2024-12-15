@@ -52,6 +52,7 @@
   position: sticky;
   top: 0;
   z-index: 1;
+  text-align: center;
 }
 
 .responsive-table thead:hover {
@@ -87,11 +88,13 @@
 .responsive-table th:nth-child(5),
 .responsive-table td:nth-child(5) {
   width: 5%;
+  text-align: center;
 }
 .responsive-table th:nth-child(6),
 .responsive-table td:nth-child(6) {
   width: 15%;
   align-items: center;
+  text-align: center;
 }
 .btn-option {
   height: 50px;
@@ -100,6 +103,7 @@
   color: white;
   font-weight: bold;
 }
+
 @media (max-width: 991px) {
   .responsive-table thead {
     display: none;

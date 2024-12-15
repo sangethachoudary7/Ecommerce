@@ -5,6 +5,7 @@ import {
   map,
   Observable,
   shareReplay,
+  switchMap,
   tap,
   throwError,
 } from 'rxjs';
@@ -27,10 +28,7 @@ import { CartService } from '../service/cart.service';
 export class ProductManagementComponent implements OnInit {
   public prodList$!: Observable<Product[]>;
   public paginatedProducts: Product[] = [];
-  public currentPage: number = 1;
-  public itemsPerPage: number = 5;
-  public totalPages: number = 1;
-  public pageNumbers: number[] = [];
+
   public proServ = inject(ProductsService);
   public toastr = inject(ToastrService);
   public globalServ = inject(GlobalService);
@@ -49,12 +47,6 @@ export class ProductManagementComponent implements OnInit {
         if (p.length === 0) {
           this.toastr.warning('No products available!');
         }
-        this.totalPages = Math.ceil(p.length / this.itemsPerPage);
-        this.pageNumbers = Array.from(
-          { length: this.totalPages },
-          (_, i) => i + 1
-        );
-        this.paginateProducts(p);
       }),
       catchError((e) => {
         this.toastr.error('An error occurred while fetching products.');
@@ -67,21 +59,8 @@ export class ProductManagementComponent implements OnInit {
 
     return this.prodList$;
   }
-  paginateProducts(products: Product[]): void {
-    const startIndex = (this.currentPage - 1) * this.itemsPerPage;
-    const endIndex = startIndex + this.itemsPerPage;
-    this.paginatedProducts = products.slice(startIndex, endIndex);
-  }
 
-  goToPage(page: number): void {
-    if (page >= 1 && page <= this.totalPages) {
-      this.currentPage = page;
-      this.prodList$.subscribe((products) => {
-        this.paginateProducts(products);
-      });
-    }
-  }
-
+  
   editProduct(product: any) {
     this.router.navigate(['catalogue', 'edit-product', product.productId]);
     this.cartService.showUpdate();
@@ -90,11 +69,19 @@ export class ProductManagementComponent implements OnInit {
 
   deleteProduct(productId: number) {
     // this.prodList$= this.prodList$.filter((p) => p.id !== productId);
-    this.proServ.deleteProductByPid(productId).pipe(
-      map((resp) => {
-        
-      })
-    )
+    this.proServ
+      .deleteProductByPid(productId)
+      .pipe(
+        switchMap(() => this.proServ.getProducts()),
+        tap(() => {
+          this.toastr.success('Product deleted successfully!');
+        }),
+        catchError((error) => {
+          this.toastr.error(error);
+          return throwError(() => error);
+        })
+      )
+      .subscribe();
     console.log('Deleted product with ID:', productId);
   }
   addProduct() {

@@ -1,62 +1,51 @@
 <div class="category-container">
-  <h2>Create Category or Subcategory</h2>
-  <div class="form-group">
-    <label for="categoryType">Choose Type:</label>
-    <select
-      id="categoryType"
-      class="form-control"
-      (change)="onCategoryTypeChange($event)"
-    >
-      <option value="parent">Parent Category</option>
-      <option value="sub">Subcategory</option>
-    </select>
-  </div>
+  <div class="controls">
+    <h2>Create Category</h2>
+    <form [formGroup]="categoryForm" onsubmit="addCategory()">
+      <div class="form-group">
+        <label for="categoryType">Choose Type:</label>
+        <select
+          id="categoryType"
+          class="form-control"
+          formControlName="categoryType"
+          (change)="onCategoryTypeChange($event)"
+        >
+          <option value="select">[Select]</option>
+          <option value="parent">Parent Category</option>
+          <option value="sub">Subcategory</option>
+        </select>
+      </div>
+      <div *ngIf="isSubCategory">
+        <div class="form-group" *ngIf="category$ | async as category">
+          <label for="parentCategorySelect">Parent Category</label>
+          <select
+            id="parentCategorySelect"
+            class="form-control"
+            formControlName="parentCategory"
+          >
+            <option value="select">[Select]</option>
+            <option *ngFor="let c of category" [value]="c.categoryId">
+              {{ c.categoryName }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="pcName">Category Name:</label>
+        <input
+          type="text"
+          id="pCatName"
+          class="form-control"
+          placeholder="Enter category name"
+          formControlName="categoryName"
+        />
+      </div>
 
-  <!-- Parent Category Section -->
-  <div class="parent-category" *ngIf="isParentCategory">
-    <h3>Parent Category</h3>
-    <div class="form-group">
-      <label for="parentCategoryName">Category Name:</label>
-      <input
-        type="text"
-        id="parentCategoryName"
-        class="form-control"
-        [(ngModel)]="parentCategoryName"
-        placeholder="Enter category name"
-      />
-    </div>
-    <button class="btn btn-primary" (click)="addParentCategory()">
-      Add Category
-    </button>
-  </div>
-
-  <!-- Subcategory Section -->
-  <div class="sub-category" *ngIf="!isParentCategory">
-    <h3>Subcategory</h3>
-    <div class="form-group">
-      <label for="parentCategorySelect">Select Parent Category:</label>
-      <select
-        id="parentCategorySelect"
-        class="form-control"
-        [(ngModel)]="selectedParentCategory"
-      >
-        <option *ngFor="let category of parentCategories" [value]="category.id">
-          {{ category.name }}
-        </option>
-      </select>
-    </div>
-    <div class="form-group">
-      <label for="subCategoryName">Subcategory Name:</label>
-      <input
-        type="text"
-        id="subCategoryName"
-        class="form-control"
-        [(ngModel)]="subCategoryName"
-        placeholder="Enter subcategory name"
-      />
-    </div>
-    <button class="btn btn-primary" (click)="addSubCategory()">
-      Add Subcategory
-    </button>
+      <div class="form-group">
+        <button class="btn btn-primary" (click)="addCategory()">
+          Add Category
+        </button>
+      </div>
+    </form>
   </div>
 </div>

@@ -122,4 +122,22 @@ export class ProductsService {
         })
       );
   }
+
+  public createCategory(
+    category: ProductCategory
+  ): Observable<ApiResponse<string>> {
+    return this.http
+      .post<ApiResponse<string>>(
+        `${Api.API_URL}${Api.METHODS.C_CATEGORY}`,
+        category
+      )
+      .pipe(
+        map((resp) => {
+          return resp;
+        }),
+        catchError((e) => {
+          return throwError(() => e);
+        })
+      );
+  }
 }

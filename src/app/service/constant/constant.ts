@@ -19,10 +19,10 @@ export const Api = {
     C_PRODOCT: 'CreateProduct',
     U_PRODOCT: 'UpdateProduct',
     D_PRODUCT_BY_P_ID: 'DeleteProductById',
-
+    C_CATEGORY: 'CreateNewCategory',
     PLACE_ORDER: 'PlaceOrder',
     CANCLE_ORDER: 'cancelOrder',
-    CREATE_NEW_CATEGORY: 'CreateNewCategory',
+   
     DELETE_CATEGORY_BY_ID: 'DeleteCategoryById',
   },
 };
