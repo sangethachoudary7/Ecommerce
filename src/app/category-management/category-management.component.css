@@ -44,7 +44,7 @@
   border: 5px solid rgb(8, 8, 8);
   word-wrap: break-word;
   white-space: normal;
-  text-align: left;
+  text-align: center;
 }
 
 .responsive-table thead {
@@ -72,30 +72,26 @@
 
 .responsive-table th:nth-child(2),
 .responsive-table td:nth-child(2) {
-  width: 15%;
+  width: 10%;
 }
 
 .responsive-table th:nth-child(3),
 .responsive-table td:nth-child(3) {
-  width: 15%;
+  width: 25%;
+  text-align: center;
 }
 
 .responsive-table th:nth-child(4),
 .responsive-table td:nth-child(4) {
-  width: 20%;
-}
-
-.responsive-table th:nth-child(5),
-.responsive-table td:nth-child(5) {
   width: 8%;
   text-align: center;
 }
-.responsive-table th:nth-child(6),
-.responsive-table td:nth-child(6) {
-  width: 25%;
-  align-items: center;
+.responsive-table th:nth-child(5),
+.responsive-table td:nth-child(5) {
+  width: 50%;
   text-align: center;
 }
+
 .btn-option {
   height: 50px;
   width: 120px;

@@ -10,7 +10,7 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { Api, headers } from './constant/constant';
+import { Api} from './constant/constant';
 import { AddToCart, ApiResponse } from '../interface/product';
 import { ToastrService } from 'ngx-toastr';
 

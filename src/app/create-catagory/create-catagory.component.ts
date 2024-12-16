@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -12,6 +12,9 @@ import { catchError, map, Observable, take, tap, throwError } from 'rxjs';
 import { ProductsService } from '../service/products.service';
 import { CartService } from '../service/cart.service';
 import { ToastrService } from 'ngx-toastr';
+import { Router } from '@angular/router';
+import { User } from '../interface/login';
+import { CategoryService } from '../service/category.service';
 
 @Component({
   selector: 'app-create-catagory',
@@ -20,20 +23,18 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './create-catagory.component.html',
   styleUrl: './create-catagory.component.css',
 })
-export class CreateCatagoryComponent {
+export class CreateCatagoryComponent implements OnInit {
   public category$!: Observable<ProductCategory[]>;
   public isSubCategory = false;
   public pId: number = 0;
 
   public categoryForm!: FormGroup;
-
-  // public selectedCategoryType: string = 'select';
-  // public selectedParentCategory: string = 'select';
-  // public parentCategoryName: string = '';
+  public userDetails!: User;
   constructor(
-    private proServ: ProductsService,
+    private catServ: CategoryService,
+    public proServ: ProductsService,
     private toastr: ToastrService,
-    private carts: CartService,
+    private router: Router,
     private fb: FormBuilder
   ) {
     this.categoryForm = this.fb.group({
@@ -42,15 +43,24 @@ export class CreateCatagoryComponent {
       categoryName: ['', Validators.required],
     });
   }
+
   ngOnInit() {
-    // this.loadCategories();
+    this.getUserDetails();
   }
 
+  getUserDetails() {
+    const userDetailsString = sessionStorage.getItem('userDetails');
+    if (userDetailsString) {
+      this.userDetails = JSON.parse(userDetailsString);
+    } else {
+      this.userDetails = {} as User;
+    }
+  }
   private loadCategories(pId: number) {
     this.category$ = this.proServ.getCategory().pipe(
       map((resp) => {
         const categories = resp.data;
-        console.log('data', resp.data);
+        this.catServ.updateCategorySubject(resp.data);
         return categories.filter((c) =>
           pId === 0 ? c.parentCategoryId === 0 : c.parentCategoryId !== 0
         );
@@ -74,14 +84,21 @@ export class CreateCatagoryComponent {
     }
     this.loadCategories(this.pId);
   }
-
+  onSelectedCategory(event: Event) {
+    const target = event.target as HTMLSelectElement;
+    const value = target.value;
+    if (value) {
+    }
+  }
   addCategory() {
     if (this.categoryForm.invalid) {
       this.toastr.warning('Invalid Form');
       return;
     }
-    const formData = this.categoryForm.value;
-    this.proServ
+    const formData: ProductCategory = this.categoryForm.value;
+    formData.userId = this.userDetails.custId;
+
+    this.catServ
       .createCategory(formData)
       .pipe(
         tap((resp) => {
@@ -97,11 +114,13 @@ export class CreateCatagoryComponent {
         })
       )
       .subscribe();
-    this.loadCategories(this.pId);
+    // this.loadCategories(this.pId);
     this.categoryForm.reset({
       categoryType: 'select',
       parentCategory: 'select',
       categoryName: '',
     });
+    this.router.navigateByUrl('/category-management');
   }
+  public getCategoryParentId() {}
 }

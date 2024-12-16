@@ -19,6 +19,7 @@ import { HomePageComponent } from './welcome-page/home-page/home-page.component'
 import { NotfoundComponent } from './notfound/notfound.component';
 import { ServicepageComponent } from './welcome-page/servicepage/servicepage.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
+import { CategoryManagementComponent } from './category-management/category-management.component';
 
 export const routes: Routes = [
   {
@@ -69,6 +70,10 @@ export const routes: Routes = [
   {
     path: 'product-management',
     component: ProductManagementComponent,
+  },
+  {
+    path: 'category-management',
+    component: CategoryManagementComponent,
   },
   {
     path: 'catalogue',

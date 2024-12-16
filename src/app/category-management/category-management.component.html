@@ -1,0 +1,58 @@
+<div class="container-wrapper">
+  <div>
+    <h1 class="heading">Category List</h1>
+  </div>
+
+  <div *ngIf="categoryList$ | async as products">
+    <table class="responsive-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>CategoryId</th>
+          <th>Category Name</th>
+          <th>ParentCategoryId</th>
+          <th>Options</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <tr *ngFor="let c of products; let i = index">
+          <td>
+            {{ i + 1 }}
+          </td>
+          <td>
+            {{ c.categoryId }}
+          </td>
+
+          <td>
+            {{ c.categoryName }}
+          </td>
+          <td>
+            {{ c.parentCategoryId }}
+          </td>
+
+          <td>
+            <button
+              class="btn btn btn-success btn-option me-2"
+              (click)="addCategory()"
+            >
+              add
+            </button>
+            <button
+              class="btn btn-primary btn-option me-2"
+              (click)="updateCategory(c)"
+            >
+              edit
+            </button>
+            <button
+              class="btn btn-danger btn-option"
+              (click)="deleteCategory(c.categoryId)"
+            >
+              delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

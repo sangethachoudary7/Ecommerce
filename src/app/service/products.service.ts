@@ -46,6 +46,7 @@ export class ProductsService {
       )
       .pipe(
         map((resp) => {
+          console.log('resp', resp.data);
           return resp;
         }),
         catchError((err) => {
@@ -115,24 +116,6 @@ export class ProductsService {
           if (resp.message === null) {
             throw new Error('No message returned from API');
           }
-          return resp;
-        }),
-        catchError((e) => {
-          return throwError(() => e);
-        })
-      );
-  }
-
-  public createCategory(
-    category: ProductCategory
-  ): Observable<ApiResponse<string>> {
-    return this.http
-      .post<ApiResponse<string>>(
-        `${Api.API_URL}${Api.METHODS.C_CATEGORY}`,
-        category
-      )
-      .pipe(
-        map((resp) => {
           return resp;
         }),
         catchError((e) => {

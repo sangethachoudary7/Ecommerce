@@ -20,10 +20,10 @@ export const Api = {
     U_PRODOCT: 'UpdateProduct',
     D_PRODUCT_BY_P_ID: 'DeleteProductById',
     C_CATEGORY: 'CreateNewCategory',
+    DELETE_CATEGORY_BY_ID: 'DeleteCategoryById', // API_URL: '/api/BigBasket/', or   // API_URL: '/api/Ecommerce/',
+
     PLACE_ORDER: 'PlaceOrder',
     CANCLE_ORDER: 'cancelOrder',
-   
-    DELETE_CATEGORY_BY_ID: 'DeleteCategoryById',
   },
 };
 export const LoginApi = {
