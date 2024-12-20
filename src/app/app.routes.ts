@@ -20,6 +20,11 @@ import { NotfoundComponent } from './notfound/notfound.component';
 import { ServicepageComponent } from './welcome-page/servicepage/servicepage.component';
 import { ProductManagementComponent } from './product-management/product-management.component';
 import { CategoryManagementComponent } from './category-management/category-management.component';
+import { CheckoutComponent } from './product-catalogue/cart/checkout/checkout.component';
+import { AddressComponent } from './product-catalogue/cart/checkout/address/address.component';
+import { CompleteComponent } from './product-catalogue/cart/checkout/complete/complete.component';
+import { OrderSummaryComponent } from './product-catalogue/cart/checkout/order-summary/order-summary.component';
+import { PaymentComponent } from './product-catalogue/cart/checkout/payment/payment.component';
 
 export const routes: Routes = [
   {
@@ -102,7 +107,33 @@ export const routes: Routes = [
       {
         path: 'cart',
         component: CartComponent,
+        // children: [{ path: 'checkout', component: CheckoutComponent }],
+        children: [
+          {
+            
+            path: 'checkout',
+            component: CheckoutComponent,
+            children: [
+              { path: '', component: OrderSummaryComponent },
+              { path: 'order-summary', component: OrderSummaryComponent },
+              { path: 'address', component: AddressComponent },
+              { path: 'payment', component: PaymentComponent },
+              { path: 'complete', component: CompleteComponent },
+            ],
+          },
+        ],
       },
+      // {
+      //   path: 'checkout',
+      //   component: CheckoutComponent,
+      //   children: [
+      //     { path: '', component: OrderSummaryComponent },
+      //     { path: 'order-summary', component: OrderSummaryComponent },
+      //     { path: 'address', component: AddressComponent },
+      //     { path: 'payment', component: PaymentComponent },
+      //     { path: 'complete', component: CompleteComponent },
+      //   ],
+      // },
     ],
   },
   {

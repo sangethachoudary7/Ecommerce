@@ -1,0 +1,128 @@
+.checkout-container {
+  width: 210mm;
+  min-height: 297mm;
+  margin: 0 auto;
+  padding: 20mm;
+  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  font-family: "Arial", sans-serif;
+  border: 1px solid #ddd;
+}
+
+.header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+.logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  width: 150px;
+  height: auto;
+  margin-right: 20px;
+}
+
+.company-info {
+  flex-grow: 1;
+}
+
+.company-info h1 {
+  font-size: 28px;
+  margin: 0;
+}
+
+.contact-details {
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.contact-details a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+.product-details h2 {
+  text-align: left;
+  margin-bottom: 15px;
+  color: #333;
+}
+
+.order-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background-color: #fff;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.order-table th,
+.order-table td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.order-table th {
+  background-color: #007bff;
+  color: #fff;
+  font-weight: bold;
+}
+
+.order-table tr:nth-child(even) {
+  background-color: #f7f7f7;
+}
+
+.order-table tr:hover {
+  background-color: #e8f4ff;
+}
+
+.price-summary {
+  margin-top: 30px;
+  text-align: right;
+  font-size: 16px;
+}
+
+.price-summary p {
+  margin: 5px 0;
+}
+
+.price-summary .total-amount {
+  font-size: 18px;
+  font-weight: bold;
+  color: #007bff;
+}
+
+@media print {
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .checkout-container {
+    box-shadow: none;
+    margin: 0;
+    padding: 10mm;
+  }
+
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .order-table th,
+  .order-table td {
+    font-size: 14px;
+    padding: 8px;
+  }
+
+  .price-summary {
+    font-size: 14px;
+  }
+}

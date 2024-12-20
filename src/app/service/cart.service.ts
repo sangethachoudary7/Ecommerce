@@ -10,7 +10,7 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { Api} from './constant/constant';
+import { Api } from './constant/constant';
 import { AddToCart, ApiResponse } from '../interface/product';
 import { ToastrService } from 'ngx-toastr';
 
@@ -29,7 +29,21 @@ export class CartService {
   private updateVisibleSubject = new BehaviorSubject<boolean>(false);
   updateVisible$ = this.updateVisibleSubject.asObservable();
 
+  // private custId: number = 0;
+  public transactionID!: string;
   constructor(private http: HttpClient, private toastr: ToastrService) {}
+
+  // setCartItems(cartItems: any[]): void {
+  //   this.cartItemsSubject.next(cartItems);
+  // }
+
+  // setCustId(custId: number): void {
+  //   this.custId = custId;
+  // }
+
+  // getCustId(): number {
+  //   return this.custId;
+  // }
 
   totalPrice$ = this.cartItems$.pipe(
     map((items) =>

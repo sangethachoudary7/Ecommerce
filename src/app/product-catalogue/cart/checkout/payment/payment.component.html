@@ -1,0 +1,48 @@
+<div class="main">
+  <div class="container payment-container">
+    <!-- <div class="paypal-logo">
+      <img
+        src="https://www.paypalobjects.com/webstatic/mktg/logo/pp_cc_mark_111x69.jpg"
+        alt="PayPal Logo"
+      />
+    </div> -->
+
+    <form>
+      <!-- <div class="mb-3">
+        <label for="name" class="form-label">Name</label>
+        <input
+          type="text"
+          class="form-control"
+          id="name"
+          placeholder="Enter your name"
+          required
+        />
+      </div>
+      <div class="mb-3">
+        <label for="email" class="form-label">Email</label>
+        <input
+          type="email"
+          class="form-control"
+          id="email"
+          placeholder="Enter your email"
+          required
+        />
+      </div> -->
+      <div class="mb-3">
+        <label for="amount" class="form-label"
+          >{{ TotalAmount$ | async | currency : "USD" }}
+        </label>
+      </div>
+      <div class="mb-3" #paymentRef></div>
+
+      <!-- <div class="d-grid gap-2 mt-3">
+        <button type="button" class="btn btn-paypal">Pay with PayPal</button>
+      </div> -->
+      <div class="d-grid gap-2 mt-3">
+        <button type="button" class="btn btn-paypal" (click)="paymentCancle()">
+          Cancel
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

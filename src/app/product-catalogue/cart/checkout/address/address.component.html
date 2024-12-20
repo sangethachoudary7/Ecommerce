@@ -1,0 +1,133 @@
+<div class="main">
+  <div class="container">
+    <h1>Shipping</h1>
+    <p>Please enter your shipping details.</p>
+    <hr />
+    <form [formGroup]="addressForm" (ngSubmit)="onSubmit()">
+      <div class="form">
+        <div class="fields fields--2">
+          <label class="field">
+            <span class="field__label" for="firstname">First name</span>
+            <input
+              class="field__input"
+              type="text"
+              id="firstname"
+              formControlName="firstname"
+            />
+          </label>
+          <div class="error"
+            *ngIf="
+              addressForm.get('firstname')?.invalid &&
+              addressForm.get('firstname')?.touched
+            "
+          >
+            <small>First name is required.</small>
+          </div>
+          <label class="field">
+            <span class="field__label" for="lastname">Last name</span>
+            <input
+              class="field__input"
+              type="text"
+              id="lastname"
+              formControlName="lastname"
+            />
+          </label>
+          <div class="error"
+            *ngIf="
+              addressForm.get('lastname')?.invalid &&
+              addressForm.get('lastname')?.touched
+            "
+          >
+            <small>Last name is required.</small>
+          </div>
+        </div>
+        <label class="field">
+          <span class="field__label" for="address">Address</span>
+          <input
+            class="field__input"
+            type="text"
+            id="address"
+            formControlName="address"
+          />
+        </label>
+        <div class="error"
+          *ngIf="
+            addressForm.get('address')?.invalid &&
+            addressForm.get('address')?.touched
+          "
+        >
+          <small>Address is required.</small>
+        </div>
+        <label class="field">
+          <span class="field__label" for="country">Country</span>
+          <select class="field__input" id="country" formControlName="country">
+            <option value=""></option>
+            <option value="unitedstates">United States</option>
+          </select>
+          <div class="error"
+            *ngIf="
+              addressForm.get('country')?.invalid &&
+              addressForm.get('country')?.touched
+            "
+          >
+            <small>Country is required.</small>
+          </div>
+        </label>
+        <div class="fields fields--3">
+          <label class="field">
+            <span class="field__label" for="zipcode">Zip code</span>
+            <input
+              class="field__input"
+              type="text"
+              id="zipcode"
+              formControlName="zipcode"
+            />
+          </label>
+          <div class="error"
+            *ngIf="
+              addressForm.get('zipcode')?.invalid &&
+              addressForm.get('zipcode')?.touched
+            "
+          >
+            <small>Zipcode is required.</small>
+          </div>
+          <label class="field">
+            <span class="field__label" for="city">City</span>
+            <input
+              class="field__input"
+              type="text"
+              id="city"
+              formControlName="city"
+            />
+          </label>
+          <div class="error"
+            *ngIf="
+              addressForm.get('city')?.invalid &&
+              addressForm.get('city')?.touched
+            "
+          >
+            <small>City is required.</small>
+          </div>
+          <label class="field">
+            <span class="field__label" for="state">State</span>
+            <select class="field__input" id="state" formControlName="state">
+              <option value=""></option>
+            </select>
+          </label>
+          <div class="error"
+            *ngIf="
+              addressForm.get('state')?.invalid &&
+              addressForm.get('state')?.touched
+            "
+          >
+            <small>State is required.</small>
+          </div>
+        </div>
+      </div>
+      <hr />
+      <button class="button" type="submit" [disabled]="!addressForm.valid">
+        Continue
+      </button>
+    </form>
+  </div>
+</div>

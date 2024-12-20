@@ -1,11 +1,4 @@
-import {
-  Component,
-  EventEmitter,
-  inject,
-  Input,
-  OnInit,
-  Output,
-} from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { CartService } from '../../service/cart.service';
 import { CommonModule } from '@angular/common';
 import {
@@ -14,20 +7,19 @@ import {
   finalize,
   map,
   Observable,
-  switchMap,
   tap,
   throwError,
 } from 'rxjs';
 import { AddToCart, ApiResponse, Product } from '../../interface/product';
 import { ProductsService } from '../../service/products.service';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { GlobalService } from '../../service/global.service';
 
 @Component({
   selector: 'app-cart',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, RouterOutlet],
   templateUrl: './cart.component.html',
   styleUrl: './cart.component.css',
 })
@@ -137,18 +129,22 @@ export class CartComponent implements OnInit {
       .subscribe();
   }
   calculateExpectedDeliveryDate(): string {
-    const currentDate = new Date(); // Get current date
-    currentDate.setDate(currentDate.getDate() + 5); // Add 5 days to the current date
+    const currentDate = new Date();
+    currentDate.setDate(currentDate.getDate() + 5);
 
-    return this.formatDate(currentDate); // Return formatted date
+    return this.formatDate(currentDate);
   }
 
   // Function to format date in "DD.MM.YYYY" format
   formatDate(date: Date): string {
     const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are 0-based, so we add 1
+    const month = String(date.getMonth() + 1).padStart(2, '0');
     const year = date.getFullYear();
 
-    return `${day}.${month}.${year}`; // Return formatted date (e.g., "12.10.2020")
+    return `${day}.${month}.${year}`;
+  }
+  proceedToCheckout() {
+    // this.router.navigateByUrl('/catalogue/cart/checkout');
+    this.router.navigateByUrl('/catalogue/cart/checkout');
   }
 }

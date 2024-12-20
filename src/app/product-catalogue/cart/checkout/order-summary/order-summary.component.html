@@ -1,0 +1,55 @@
+<div class="checkout-container">
+  <div class="header">
+    <div class="logo-section">
+      <img src="assets/images/logo.jpg" alt="Company Logo" class="logo" />
+      <div class="company-info">
+        <h1>Sangeetha Online Shopping</h1>
+        <div class="contact-details">
+          <p>Phone: +49 15175526370</p>
+          <p>Email: {{"contact@sangeetha-shopping.com"}}</p>
+          <p>Website: <a href="https://www.sangeetha-shopping.com" target="_blank">www.sangeetha-shopping.com</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="cartItems$ | async as cartItems" class="product-details">
+    <h2>Order Summary</h2>
+    <table class="order-table">
+      <thead>
+        <tr>
+          <th>S.No</th>
+          <th>Product Name</th>
+          <th>Quantity</th>
+          <th>Price</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let item of cartItems; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ item.productName }}</td>
+          <td>{{ item.quantity }}</td>
+          <td>{{ item.productPrice | currency : "INR" }}</td>
+          <td>{{ item.productPrice! * item.quantity | currency : "INR" }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="price-summary">
+    <p>
+      <strong>Product Price:</strong>
+      {{ totalProductPrice$ | async | currency }}
+    </p>
+    <p>
+      <strong>Shipping Price:</strong> {{ shippingPrice$ | async | currency }}
+    </p>
+    <p class="total-amount">
+      <strong>Total Amount:</strong> {{ totalAmount$ | async | currency }}
+    </p>
+  </div>
+ <div>
+
+ </div> 
+</div>

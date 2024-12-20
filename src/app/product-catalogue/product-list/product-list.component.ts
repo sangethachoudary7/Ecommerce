@@ -239,8 +239,13 @@ export class ProductListComponent implements OnInit, OnChanges {
         .getCartItems(this.userDetails.custId)
         .pipe(
           tap((resp) => {
-            console.log('tap plist', resp);
             if (resp && resp.length > 0) {
+              // this.cartService.setCartItems(resp);
+              // this.cartService.setCustId(this.userDetails.custId);
+              // this.router.navigate(['/catalogue/cart'], {
+              //   queryParams: { custId: this.userDetails.custId },
+              // });
+              this.router.navigate(['catalogue/cart/']);
             } else {
               this.toastr.info('No Products Available in cart');
             }
