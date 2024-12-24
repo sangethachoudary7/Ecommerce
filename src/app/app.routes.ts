@@ -110,7 +110,6 @@ export const routes: Routes = [
         // children: [{ path: 'checkout', component: CheckoutComponent }],
         children: [
           {
-            
             path: 'checkout',
             component: CheckoutComponent,
             children: [

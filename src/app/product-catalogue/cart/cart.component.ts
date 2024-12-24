@@ -24,9 +24,11 @@ import { GlobalService } from '../../service/global.service';
   styleUrl: './cart.component.css',
 })
 export class CartComponent implements OnInit {
-  @Input() cartItems!: Observable<AddToCart[]>;
-  @Input() custId!: number;
+  // @Input() cartItems!: Observable<AddToCart[]>;
+  // @Input() custId!: number;
 
+  public cartItems$!: Observable<AddToCart[]>;
+  // public cusrId!: number;
   public prodList$!: Observable<{ data: Product }>;
 
   cartService = inject(CartService);
@@ -41,13 +43,17 @@ export class CartComponent implements OnInit {
   expectedDeliveryDate: string;
 
   constructor() {
-    this.currentDate = this.formatDate(new Date()); // Get current date and format it
-    this.expectedDeliveryDate = this.calculateExpectedDeliveryDate(); // Calculate expected delivery date
+    this.currentDate = this.formatDate(new Date());
+    this.expectedDeliveryDate = this.calculateExpectedDeliveryDate();
   }
 
   ngOnInit(): void {
-    if (!this.cartItems) {
-      this.cartItems = this.cartService.cartItems$;
+    this.cartItems$ = this.cartService.cartItems$.pipe(
+      tap((resp) => {
+        return resp;
+      })
+    );
+    if (!this.cartItems$) {
     }
   }
   updateQuantity(
@@ -108,6 +114,7 @@ export class CartComponent implements OnInit {
   }
   closeCart() {
     this.cartService.toggleCartVisibility();
+    this.router.navigate(['catalogue/']);
   }
   deleteItem(cartId: number) {
     return this.cartService
@@ -116,7 +123,7 @@ export class CartComponent implements OnInit {
         tap((response) => {
           if (response.result) {
             this.toastr.success('Product removed from cart');
-            this.cartItems = this.cartService.cartItems$;
+            this.cartItems$ = this.cartService.cartItems$;
           } else {
             this.toastr.error('Failed to remove product');
           }
@@ -144,7 +151,7 @@ export class CartComponent implements OnInit {
     return `${day}.${month}.${year}`;
   }
   proceedToCheckout() {
-    // this.router.navigateByUrl('/catalogue/cart/checkout');
     this.router.navigateByUrl('/catalogue/cart/checkout');
+    // this.router.navigateByUrl('/catalogue/checkout');
   }
 }

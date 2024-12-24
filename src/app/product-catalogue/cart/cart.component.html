@@ -11,10 +11,10 @@
           <div class="card mb-4">
             <div class="card-header py-3">
               <h2 class="mb-0">
-                Cart - {{ (cartItems | async)?.length || 0 }} items
+                Cart - {{ (cartItems$ | async)?.length || 0 }} items
               </h2>
             </div>
-            <div class="card-body" *ngIf="cartItems | async as items">
+            <div class="card-body" *ngIf="cartItems$ | async as items">
               <div class="row" *ngFor="let i of items">
                 <div class="col-lg-3 col-md-12 mb-4 mb-lg-0">
                   <div

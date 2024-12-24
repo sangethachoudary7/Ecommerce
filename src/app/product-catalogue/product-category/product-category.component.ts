@@ -60,8 +60,7 @@ export class ProductCategoryComponent implements OnInit {
     );
   }
   toggleDropdown(categoryId: number): void {
-    // this.selectedCategoryId =
-    //   this.selectedCategoryId === categoryId ? null : categoryId;
+    
     this.openCategoryId =
       this.openCategoryId === categoryId ? null : categoryId;
     if (this.selectedCategoryId !== categoryId) {

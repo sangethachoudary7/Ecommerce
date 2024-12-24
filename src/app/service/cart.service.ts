@@ -33,18 +33,7 @@ export class CartService {
   public transactionID!: string;
   constructor(private http: HttpClient, private toastr: ToastrService) {}
 
-  // setCartItems(cartItems: any[]): void {
-  //   this.cartItemsSubject.next(cartItems);
-  // }
-
-  // setCustId(custId: number): void {
-  //   this.custId = custId;
-  // }
-
-  // getCustId(): number {
-  //   return this.custId;
-  // }
-
+  
   totalPrice$ = this.cartItems$.pipe(
     map((items) =>
       items.reduce(

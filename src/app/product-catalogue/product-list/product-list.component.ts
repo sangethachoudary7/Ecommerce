@@ -48,8 +48,8 @@ export class ProductListComponent implements OnInit, OnChanges {
   public loading$!: Observable<boolean>;
 
   @Input() selectedCategoryId: number | null = null;
-  @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
-  @Output() uDetails = new EventEmitter<User>();
+  // @Output() cartItems = new EventEmitter<Observable<AddToCart[]>>();
+  // @Output() uDetails = new EventEmitter<User>();
   userDetails!: User;
 
   @ViewChild('cartWindow') cartWindow!: ElementRef;
@@ -81,13 +81,16 @@ export class ProductListComponent implements OnInit, OnChanges {
   }
 
   getUserDetails() {
-    const userDetailsString = sessionStorage.getItem('userDetails');
-    if (userDetailsString) {
-      this.userDetails = JSON.parse(userDetailsString);
-      this.uDetails.emit(this.userDetails);
-    } else {
-      this.userDetails = {} as User;
-    }
+    // const userDetailsString = sessionStorage.getItem('userDetails');
+    // if (userDetailsString) {
+    //   this.userDetails = JSON.parse(userDetailsString);
+    //   this.uDetails.emit(this.userDetails);
+    // } else {
+    //   this.userDetails = {} as User;
+    // }
+    this.userDetails = this.globalServ.getUserDetails();
+
+    // this.uDetails.emit(this.userDetails);
   }
   private loadProducts(): Observable<Product[] | []> {
     this.globalServ.startLoading();
@@ -235,35 +238,33 @@ export class ProductListComponent implements OnInit, OnChanges {
   getCartItems() {
     this.globalServ.startLoading();
     if (this.cartQuantity$) {
-      this.cartItems$ = this.cartService
-        .getCartItems(this.userDetails.custId)
-        .pipe(
-          tap((resp) => {
-            if (resp && resp.length > 0) {
-              // this.cartService.setCartItems(resp);
-              // this.cartService.setCustId(this.userDetails.custId);
-              // this.router.navigate(['/catalogue/cart'], {
-              //   queryParams: { custId: this.userDetails.custId },
-              // });
-              this.router.navigate(['catalogue/cart/']);
-            } else {
-              this.toastr.info('No Products Available in cart');
-            }
-          }),
-          catchError((e) => {
-            return of([]);
-          }),
-          finalize(() => {
-            this.globalServ.stopLoading();
-          })
-        );
+      this.router.navigate(['catalogue/cart/']);
+      //this.cartService
+      // .getCartItems(this.userDetails.custId)
+      // .pipe(
+      //   tap((resp) => {
+      //     if (resp && resp.length > 0) {
+      //       this.router.navigate(['catalogue/cart/']);
+      //     } else {
+      //       this.toastr.info('No Products Available in cart');
+      //     }
+      //   }),
+      //   catchError((e) => {
+      //     this.toastr.error('Error fetching cart items');
+      //     return of([]);
+      //   }),
+      //   finalize(() => {
+      //     this.globalServ.stopLoading();
+      //   })
+      // )
+      // .subscribe();
 
-      this.cartItems.emit(this.cartItems$);
-
+      // this.cartItems.emit(this.cartItems$);
       this.cartService.showCart();
     } else {
       this.toastr.info('No Products Available in cart');
     }
+    this.globalServ.stopLoading();
   }
   updateProduct(productId: number): void {
     this.router.navigate(['catalogue', 'edit-product', productId]);

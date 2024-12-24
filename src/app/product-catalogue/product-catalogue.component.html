@@ -9,20 +9,27 @@
     <app-product-list
       *ngIf="!(isAnyOverlayVisible$ | async)"
       [selectedCategoryId]="selectedCategoryId"
-      (cartItems)="cartItems($event)"
-      (uDetails)="userDetails($event)"
     ></app-product-list>
   </div>
   <div>
-    <app-cart
+    <!-- <app-cart
       [custId]="uDetails.custId"
       [cartItems]="cartItems$"
       *ngIf="isCartVisible$ | async"
-    ></app-cart>
-    <!-- <router-outlet></router-outlet> -->
+    ></app-cart> -->
+    <router-outlet></router-outlet>
   </div>
 
   <div *ngIf="isUpdateVisible$ | async">
     <router-outlet></router-outlet>
   </div>
 </div>
+
+<!-- <div class="product-list">
+  <app-product-list
+    *ngIf="!(isAnyOverlayVisible$ | async)"
+    [selectedCategoryId]="selectedCategoryId"
+    (cartItems)="cartItems($event)"
+    (uDetails)="userDetails($event)"
+  ></app-product-list>
+</div> -->

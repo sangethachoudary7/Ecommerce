@@ -16,7 +16,6 @@ import { RouterOutlet } from '@angular/router';
     ProductListComponent,
     ProductCategoryComponent,
     ToastrWrapperModule,
-    CartComponent,
     CommonModule,
     RouterOutlet,
   ],
@@ -29,7 +28,7 @@ export class ProductCatalogueComponent {
   isCartVisible$!: Observable<boolean>;
   isUpdateVisible$!: Observable<boolean>;
   isAnyOverlayVisible$!: Observable<boolean>;
-  uDetails!: User;
+  // uDetails!: User;
 
   constructor(private cartService: CartService) {
     this.isCartVisible$ = this.cartService.cartVisible$;
@@ -45,12 +44,13 @@ export class ProductCatalogueComponent {
   onCategorySelected(categoryId: number) {
     this.selectedCategoryId = categoryId;
   }
-  cartItems(cartItems$: Observable<AddToCart[]>) {
-    this.cartItems$ = cartItems$;
-    this.isCartVisible$ = this.cartService.cartVisible$;
-  }
 
-  userDetails(uDetails: User) {
-    this.uDetails = uDetails;
-  }
+  // cartItems(cartItems$: Observable<AddToCart[]>) {
+  //   this.cartItems$ = cartItems$;
+  //   this.isCartVisible$ = this.cartService.cartVisible$;
+  // }
+
+  // userDetails(uDetails: User) {
+  //   this.uDetails = uDetails;
+  // }
 }

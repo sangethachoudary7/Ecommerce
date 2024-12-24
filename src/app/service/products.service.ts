@@ -46,7 +46,6 @@ export class ProductsService {
       )
       .pipe(
         map((resp) => {
-          console.log('resp', resp.data);
           return resp;
         }),
         catchError((err) => {
