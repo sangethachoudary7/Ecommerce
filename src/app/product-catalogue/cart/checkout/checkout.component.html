@@ -1,48 +1,60 @@
-<div class="mainWrapper">
-  <div class="statusBar">
-    <span class="pBar"></span>
-    <div class="node n0 done nConfirm0" [ngClass]="{ done: currentStep >= 0 }">
-      <div class="main done m0" [ngClass]="{ done: currentStep >= 0 }"></div>
-      <span class="text t0">Confirm</span>
+<div class="wrapper">
+  <div class="mainWrapper">
+    <div class="statusBar">
+      <span class="pBar"></span>
+      <div
+        class="node n0 done nConfirm0"
+        [ngClass]="{ done: currentStep >= 0 }"
+      >
+        <div
+          class="main done m0 nConfirm0"
+          [ngClass]="{ done: currentStep >= 0 }"
+        ></div>
+        <span class="text t0 done nConfirm0">Confirm</span>
+      </div>
+      <div class="node n1 nConfirm1" [ngClass]="{ done: currentStep >= 1 }">
+        <div
+          class="main m1 nConfirm1"
+          [ngClass]="{ done: currentStep >= 1 }"
+        ></div>
+        <span class="text t1 nConfirm1">Address</span>
+      </div>
+      <div class="node n2 nConfirm2" [ngClass]="{ done: currentStep >= 2 }">
+        <div
+          class="main m2 nConfirm2"
+          [ngClass]="{ done: currentStep >= 2 }"
+        ></div>
+        <span class="text t2 nConfirm2">Payment</span>
+      </div>
+      <div class="node n3 nConfirm3" [ngClass]="{ done: currentStep >= 3 }">
+        <div
+          class="main m3 nConfirm3"
+          [ngClass]="{ done: currentStep >= 3 }"
+        ></div>
+        <span class="text t3 nConfirm3">Complete</span>
+      </div>
     </div>
-    <div class="node n1" [ngClass]="{ done: currentStep >= 1 }">
-      <div class="main m1" [ngClass]="{ done: currentStep >= 1 }"></div>
-      <span class="text t1">Address</span>
-    </div>
-    <!-- <div class="node n2" [ngClass]="{ done: currentStep >= 2 }">
-      <div class="main m2" [ngClass]="{ done: currentStep >= 2 }"></div>
-      <span class="text t2">Review</span>
-    </div> -->
-    <div class="node n3" [ngClass]="{ done: currentStep >= 2 }">
-      <div class="main m3" [ngClass]="{ done: currentStep >= 2 }"></div>
-      <span class="text t3">Payment</span>
-    </div>
-    <div class="node n4" [ngClass]="{ done: currentStep >= 3 }">
-      <div class="main m4" [ngClass]="{ done: currentStep >= 3 }"></div>
-      <span class="text t4">Complete</span>
+    <div class="buttonHolder">
+      <button
+        class="button b-back"
+        id="back"
+        (click)="goBack()"
+        [disabled]="currentStep === 0"
+      >
+        Back
+      </button>
+      <button
+        class="button b-next"
+        id="next"
+        (click)="goNext()"
+        [disabled]="currentStep === steps.length - 1"
+      >
+        Next
+      </button>
     </div>
   </div>
-  <div class="buttonHolder">
-    <div
-      class="button b-back"
-      id="back"
-      (click)="goBack()"
-      [ngClass]="{ disabled: currentStep === 0 }"
-    >
-      Back
-    </div>
-    <div
-      class="button b-next"
-      id="next"
-      (click)="goNext()"
-      [ngClass]="{ disabled: currentStep === 2 }"
-    >
-      Next
-    </div>
+
+  <div class="a">
+    <router-outlet></router-outlet>
   </div>
 </div>
-
-<div class="made">
-  <router-outlet></router-outlet>
-</div>
-

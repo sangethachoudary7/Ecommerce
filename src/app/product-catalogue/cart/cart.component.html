@@ -1,4 +1,5 @@
 <div class="div">
+  <div class="cart" *ngIf="showCart">
   <section class="h-100 gradient-custom">
     <div>
       <button class="text-center backButton" (click)="closeCart()">
@@ -180,6 +181,7 @@
       </div>
     </div>
   </section>
+</div>
   <div>
     <router-outlet></router-outlet>
   </div>

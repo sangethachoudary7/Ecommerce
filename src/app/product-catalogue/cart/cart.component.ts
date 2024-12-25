@@ -31,6 +31,8 @@ export class CartComponent implements OnInit {
   // public cusrId!: number;
   public prodList$!: Observable<{ data: Product }>;
 
+  showCart = true;
+
   cartService = inject(CartService);
   proService = inject(ProductsService);
   toastr = inject(ToastrService);
@@ -53,8 +55,9 @@ export class CartComponent implements OnInit {
         return resp;
       })
     );
-    if (!this.cartItems$) {
-    }
+    this.router.events.subscribe(() => {
+      this.showCart = !this.router.url.includes('/cart/checkout');
+    });
   }
   updateQuantity(
     product: AddToCart,
@@ -151,7 +154,7 @@ export class CartComponent implements OnInit {
     return `${day}.${month}.${year}`;
   }
   proceedToCheckout() {
-    this.router.navigateByUrl('/catalogue/cart/checkout');
+    this.router.navigateByUrl('/catalogue/cart/checkout/order-summary');
     // this.router.navigateByUrl('/catalogue/checkout');
   }
 }

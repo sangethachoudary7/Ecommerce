@@ -107,13 +107,12 @@ export const routes: Routes = [
       {
         path: 'cart',
         component: CartComponent,
-        // children: [{ path: 'checkout', component: CheckoutComponent }],
         children: [
           {
             path: 'checkout',
             component: CheckoutComponent,
             children: [
-              { path: '', component: OrderSummaryComponent },
+              // { path: '', component: OrderSummaryComponent },
               { path: 'order-summary', component: OrderSummaryComponent },
               { path: 'address', component: AddressComponent },
               { path: 'payment', component: PaymentComponent },
